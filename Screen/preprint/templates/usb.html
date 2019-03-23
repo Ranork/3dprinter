@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<title>ARGESTA 3D</title>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/css/fa-solid.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <script src="/static/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    	.btn {
+    		border-radius: 2px;
+    		font-weight: bold;
+    	}
+    	.row {
+    		margin-right: 0px;
+    	}
+    	.bg-dark {
+    		color: white;
+    	}
+    	a:hover {
+    		text-decoration: none;
+    	}
+
+    	@keyframes blinker {  
+		  50% { opacity: 0.75; }
+		}
+		
+		.card {
+			border-radius: 2px;
+		}
+		.tablo td {
+			padding-top: 20px;
+			padding-bottom: 20px;
+			font-size: 18px;
+		}
+		.tablo th {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.activated {
+			background-color: rgba(0, 0, 0, 0.2);
+		}
+		@keyframes blinker2 {  
+		  50% { color: lightgreen; }
+		}
+    </style>
+	<script type="text/javascript">
+$(document).ready(function() {
+	$('#printBTN').prop('disabled','true');
+	$('#removeBTN').prop('disabled','true');
+
+    $('#myTable').on('click', '.clickable-row', function(event) {
+	  $('.activated').removeClass("activated");
+	  $(this).addClass("activated");
+	  $('#printBTN').removeAttr('disabled');
+	  $('#removeBTN').removeAttr('disabled');
+	});
+
+	$( "#refreshBTN" ).click(function() {
+	  location.reload();
+	});
+} );
+
+function removeFile() {
+	filename = $(".activated").find("#fullname").html();
+
+	$.ajax({
+		url: "/filecontrol/",
+		type: "POST",
+		data: { "istek": "removefile",
+		"filename": filename },
+		success: function(sonuc){
+			location.reload();
+		}
+	});
+}
+
+function save() {
+	filename = $(".activated").find("#fullname").html();
+	console.log(filename)
+	$.ajax({
+		url: "/usbcontrol/",
+		type: "POST",
+		data: { "istek": "SaveFile",
+		"file": filename },
+		success: function(sonuc){
+			location.replace("/preprint/")
+		}
+	});
+	
+}
+
+
+	</script>
+</head>
+<body style="height: 480px; width: 800px; padding: 0px;">
+
+<nav class="bg-dark" style="padding: 5px 10px;">
+	<div class="row">
+		<div class="col-md-1">
+			<a href="/"><button type="button" class="btn btn-outline-light" style="padding: 10px 15px;"> &nbsp; <i class="fas fa-chevron-left"></i> &nbsp; </button></a>
+		</div>
+		<div class="col-md-7" style=" margin-top: 10px;">
+			<a href="#" style="color: white;">ARGESTA 3D Yazıcı &nbsp; | &nbsp; USB Dosyalar</a>
+		</div>
+		<div class="col-md-4" style=" margin-top: 10px;" align="right">
+			<a href="#" style="color: lightgreen;"><i class="fas fa-check"></i> Yazılım Güncel!</a>
+			&nbsp;
+			<i class="fas fa-sign-in-alt" style="color: lightgreen;"></i>&nbsp;
+			<i class="fas fa-wifi" style="color: lightgreen;"></i>
+		</div>
+	</div>
+</nav>
+
+<div class="row" style="height: 424px; background-image: url('https://as1.ftcdn.net/jpg/01/83/60/76/500_F_183607639_b99WlxPHAV7qWlatHb4YbiOAJzndXImz.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center;">
+
+	<div class="col-md-10" style="padding: 10px; padding-left: 40px;">
+		<div class="row" style="height: 100%;">
+			<div class="col-md-12" style="height: 100%;">
+				<div class="card" style="height: 402px; overflow-y: auto;">
+					<table id="myTable" class="table tablo table-hover">
+						<thead class="thead-dark">
+							<th scope="col">#</th>
+							<th scope="col">Dosya Adı</th>
+						</thead>
+						<tbody>
+							{% for gcode in gcodes %}
+							<tr class="clickable-row">
+								<td><i class="fas fa-arrow-right"></i></th>
+								<td id="fullname">{{ gcode.0 }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-2" style="height: 100%; background-color: #73808c; -webkit-box-shadow: inset 3px 0px 10px 0px rgba(52,58,64,0.58); padding-right: 15px; padding-top: 15px;">
+		<a href="/preprint/"><button type="button" class="btn btn-light" style="font-size: 20px; height: 80px; width: 100%;"> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-hdd"></i>
+			</div>
+			<div style="font-size: 15px;">
+				HAFIZA
+			</div>
+		</button></a>
+		<button onclick="save()" id="printBTN" type="button" class="btn btn-light" style="font-size: 30px; height: 80px; width: 100%; margin-top: 20px; animation: blinker2 1s linear infinite; color: green;"> 
+			<div style="font-size: 25px;">
+				<i class="far fa-save"></i>
+			</div>
+			<div style="font-size: 15px;">
+				KAYDET
+			</div>
+		</button>
+		<button onclick="removeFile()" id="removeBTN" type="button" class="btn btn-light" style="font-size: 20px; height: 80px; width: 100%; margin-top: 20px; color: grey;"> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-trash-alt"></i>
+			</div>
+			<div style="font-size: 15px;">
+				SİL
+			</div>
+		</button>
+		<button id="refreshBTN" type="button" class="btn btn-light" style="margin-top: 30px; font-size: 20px; height: 80px; width: 100%;"> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-sync-alt"></i>
+			</div>
+			<div style="font-size: 15px;">
+				YENİLE
+			</div>
+		</button>
+	</div>
+	
+</div>
+
+</body>
+
+</html>

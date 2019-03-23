@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Argesta 3D Printer</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet"> 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" />
+	<style type="text/css">
+		body{
+			font-family: 'Roboto Slab', serif;
+			background-color: #f7f7f7;
+		}
+		a {
+			font-family: 'Roboto Slab', serif;
+		}
+		.outer {
+			display: table;
+			osition: absolute;
+			height: 100%;
+			width: 100%;
+		}
+
+		.middle {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.inner {
+			text-align: right;
+			width: 400px;
+			font-size: 17px;
+			color: green;
+			/*whatever width you want*/
+		}
+		.card2 {
+			border-radius: 0px;
+			border-left-width: 0px;
+			border-top-width: 0px;
+			border-bottom-width: 0px;
+		}
+		td .btn{
+			padding: 1px 5px;
+		}
+		.btn {
+			border-radius: 0px;
+		}
+		.hareket td {
+			padding: 0px; margin: 0px;
+		}
+		.preheat:hover {
+			border-color: #007cb0;
+		}
+		.card {
+			border-radius: 0px;
+		}
+		a:hover {
+			text-decoration: none;
+		}
+		.settings:hover {
+			border-color: #007cb0;
+		}
+		</style>
+</head>
+<body>
+
+<div class="container">
+	
+	<div class="row" style="margin-top: 15px;">
+		<div class="col-md-6">
+			<img src="http://argesta.com.tr/img/biglogo.png" style="width: 300px;">
+		</div>
+		<div class="col-md-6" align="right" style="padding-top: 20px; font-size: 20px; color: green;">
+		Yazıcınız Kullanıma Hazır &nbsp; <span class="glyphicon glyphicon-ok"></span>
+		</div>
+					
+	</div>
+	<hr/>
+
+	<div class="row">
+		<div class="col-lg-4 col-md-12 col-sm-12">
+				<div class="card" style="border-radius: 0px; padding: 10px;">
+					<div style="width: 100%; font-size: 18px;">
+						Sıcaklık
+					</div>
+					<div><hr style="margin-top: 3px; margin-bottom: 8px;"/></div>
+				
+					<div class="row">
+					<div class="col-md-6">
+						<div style="border-radius: 0px; padding: 5px;">
+							<div align="center" style="margin-top: -20px;">
+													<h3><span class="glyphicon glyphicon-screenshot" style='color: #007cb0; font-size: 30px; -webkit-text-stroke: 1px white;'></span></h3>
+											</div>
+											<div align="center">
+													<p><b>Nozul</b></p>
+													<div class="ETemp">## <span class='glyphicon glyphicon-chevron-right' style='color: #007cb0; font-size: 18px; -webkit-text-stroke: 2px white;'></span> ##</div>
+											</div>
+									</div>						
+					</div>
+					<div class="col-md-6">
+						<div style="border-radius: 0px; padding: 5px;">
+							<div align="center" style="margin-top: -20px;">
+														<h3><span class="glyphicon glyphicon-hdd" style='color: #007cb0; font-size: 25px; -webkit-text-stroke: 1px white; margin-top: 7px;'></span></h3>
+												</div>
+												<div align="center">
+														<p><b>Tabla</b></p>
+														<div class="BTemp">## <span class='glyphicon glyphicon-chevron-right' style='color: #007cb0;'></span> ##</div>
+												</div>
+										</div>
+					</div>
+				</div>
+				</div>
+
+				<div class="row" style="margin-top: 10px;">
+					<div class="col-md-8">
+						<div onclick="preheating()" class="card preheat" style="border-radius: 0px; padding: 5px; padding-top: 15px;">
+							<div align="center" style="margin-top: -20px;">
+													<h3 id="PREHEATICON"><span class="glyphicon glyphicon-leaf" style='color: #b3b3b3;'></span></h3>
+											</div>
+											<div align="center">
+													<p id="PREHEATCAPTION"><b>Ön Isıtma Başlat</b></p>
+											</div>
+									</div>						
+					</div>
+					<div class="col-md-4"><a href="/settings/">
+						<div class="card settings" style="border-radius: 0px; padding: 5px; padding-top: 15px; height: 100%;" align="center">
+							<div><span class="glyphicon glyphicon-cog" style='color: #007cb0; font-size: 25px;'></span></div>
+							<div style="margin-top: 10px;">
+								<p style="color: black !important;">AYARLAR</p>
+							</div>
+						</div></a>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 10px;">
+					<div class="col-md-12">
+						<div class="card" style="border-radius: 0px; padding: 10px;">
+							<div style="width: 100%; font-size: 18px;">
+								Manuel Isı Kontrol
+							</div>
+							<div><hr style="margin-top: 3px; margin-bottom: 8px;"/></div>
+							<div class="row">
+								<div class="col-md-2" style="padding-left: 25px;">
+									<span class="glyphicon glyphicon-hdd" style='color: #007cb0; font-size: 25px; -webkit-text-stroke: 1px white; margin-top: 7px;'></span>
+								</div>
+
+								<!--<form action="/mbedheat/">-->
+									<div class="col-md-6" align="center">
+										<input id="bedtemp" type="number" class="form-control" style="font-size: 12px;" placeholder="Tabla Sıcaklığı">
+									</div>
+									<div class="col-md-4" style="padding-left: 0px;" >
+										<button onclick="bedtempres()" class="btn btn-outline-danger"><span class="glyphicon glyphicon-remove"></span></button>
+										<button onclick="bedtempset()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-ok"></span></button>
+									</div>
+								<!--</form>-->
+
+							</div>
+							<div class="row">
+								<div class="col-md-2" style="padding-left: 25px;">
+									<span class="glyphicon glyphicon-screenshot" style='color: #007cb0; font-size: 30px; -webkit-text-stroke: 1px white;'></span>
+								</div>
+
+								<!--<form action="/mextruderheat/">-->
+									<div class="col-md-6">
+										<input id="exttemp" type="number" class="form-control" style="font-size: 12px;" placeholder="Nozul Sıcaklığı">
+									</div>
+									<div class="col-md-4" style="padding-left: 0px;" >
+										<button onclick="exttempres()" class="btn btn-outline-danger"><span class="glyphicon glyphicon-remove"></span></button>
+										<button onclick="exttempset()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-ok"></span></button>
+									</div>
+								<!--</form>-->
+
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+		<div class="col-lg-4 col-md-12 col-sm-12">
+					<div class="col-md-12">
+						<div class="card" style="padding: 10px;">
+							<div style="width: 100%; font-size: 18px;">
+								Manuel Hareket
+							</div>
+							<div><hr style="margin-top: 3px; margin-bottom: 8px;"/></div>
+
+							<div class="row" style="padding-top: 10px;">
+								<div class="col" align="center">
+									<b>X:</b> <span id="XCoor">##</span>
+								</div>
+								<div class="col" align="center">
+									<b>Y:</b> <span id="YCoor">##</span>
+								</div>
+								<div class="col" align="center">
+									<b>Z:</b> <span id="ZCoor">##</span>
+								</div>
+							</div>
+							<!-- HAREKET YÖN OKLARI -->
+							<div style="height: 20px;"></div>
+							<div class="row">
+								<div class="col">
+									
+								</div>
+								<div class="col" align="center">
+									<button onclick="YARTI2()" class="btn btn-outline-primary">
+										<div><span class="glyphicon glyphicon-chevron-up"></span></div>
+										<div style="margin-top: -11px;"><span class="glyphicon glyphicon-chevron-up"></span></div>
+									</button>
+								</div>
+								<div class="col">
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									
+								</div>
+								<div class="col" align="center">
+									<button onclick="YARTI()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-up"></span></button>
+								</div>
+								<div class="col">
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col" align="center">
+									<button onclick="XEKSI2()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-up" style="transform: rotate(270deg);"></span><span class="glyphicon glyphicon-chevron-up" style="transform: rotate(270deg); margin-left: -5px;"></span></button>
+									<button onclick="XEKSI()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-up" style="transform: rotate(270deg);"></span></button>
+									&nbsp; &nbsp; &nbsp;
+									<button onclick="XARTI()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-up" style="transform: rotate(90deg);"></span></button>
+									<button onclick="XARTI2()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-up" style="transform: rotate(90deg);"></span><span class="glyphicon glyphicon-chevron-up" style="transform: rotate(90deg); margin-left: -5px;"></span></button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									
+								</div>
+								<div class="col" align="center">
+									<button onclick="YEKSI()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-down"></span></button>
+								</div>
+								<div class="col">
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									
+								</div>
+								<div class="col" align="center">
+									<button onclick="YEKSI2()" class="btn btn-outline-primary">
+										<div><span class="glyphicon glyphicon-chevron-down"></span></div>
+										<div style="margin-top: -11px;"><span class="glyphicon glyphicon-chevron-down"></span></div>
+									</button>
+								</div>
+								<div class="col">
+									<div class="row">
+								<div class="col" style="padding-top: 25px;" align="right">
+									Z
+								</div>
+								<div class="col">
+									<div>
+										<button onclick="ZARTI()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-up"></span></button>
+									</div>
+									<div>
+										<button onclick="ZEKSI()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-chevron-down"></span></button>
+									</div>
+								</div>
+							</div>
+								</div>
+							</div>	
+
+							
+
+							<hr/>
+
+							<div style="height: 10px;"></div>
+
+							<div class="container row">
+								<div class="col-md-5">
+									H. Katsayı
+								</div>
+								<div class="col-md-7">
+									<input id="nHareket" class="form-control" style="text-align: center; margin-top: -10px;" type="number" value="10" name="katsayi" placeholder="10">
+								</div>
+							</div>
+
+							<div style="height: 10px;"></div>
+
+						</div>
+					</div>
+		</div>
+		<div class="col-lg-4 col-md-12 col-sm-12">
+					<div class="col-md-12">
+						<div class="card" style="padding: 10px;">
+							<div style="width: 100%; font-size: 18px;">
+								Orijin Noktası
+							</div>
+							<div><hr style="margin-top: 3px; margin-bottom: 8px;"/></div>
+
+
+							<div class="row">
+								<div class="col" align="center">
+									<button onclick="ALLHOME()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-home"></span></button>
+								</div>
+								<div class="col" align="center">
+									<button onclick="XHOME()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-home"></span> X</button>
+								</div>
+								<div class="col" align="center">
+									<button onclick="YHOME()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-home"></span> Y</button>
+								</div>
+								<div class="col" align="center">
+									<button onclick="ZHOME()" class="btn btn-outline-primary"><span class="glyphicon glyphicon-home"></span> Z</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12" style="margin-top: 10px;">
+						<div class="card" style="padding: 10px;">
+							<div style="width: 100%; font-size: 18px;">
+								Manuel Ekstrüzyon
+							</div>
+							<div><hr style="margin-top: 3px; margin-bottom: 8px;"/></div>
+
+							<div style="height: 30px;"></div>
+
+							<div class="row">
+								<div class="col-md-3"></div>
+								<div class="col-md-3" align="center">
+									<div>
+										<button onclick="EARTI()" class="btn btn-outline-primary" style="font-size: 25px;"><span class="glyphicon glyphicon-chevron-down"></span></button>
+									</div>
+									<div>
+										<button onclick="EARTI2()" class="btn btn-outline-primary" style="font-size: 20px;">
+											<div><span class="glyphicon glyphicon-chevron-down"></span></div>
+											<div style="margin-top: -11px;"><span class="glyphicon glyphicon-chevron-down"></span></div>
+										</button>
+									</div>
+								</div>
+								<div class="col-md-3" align="center">
+									<div>
+										<button onclick="EARTI()" class="btn btn-outline-primary" style="font-size: 25px;"><span class="glyphicon glyphicon-chevron-up"></span></button>
+									</div>
+									<div>
+										<button onclick="EARTI2()" class="btn btn-outline-primary" style="font-size: 20px;">
+											<div><span class="glyphicon glyphicon-chevron-up"></span></div>
+											<div style="margin-top: -11px;"><span class="glyphicon glyphicon-chevron-up"></span></div>
+										</button>
+									</div>
+								</div>
+								<div class="col-md-3"></div>
+							</div>
+
+							<hr/>
+
+							<div class="container row">
+								<div class="col-md-5">
+									Ekstrüzyon Katsayısı
+								</div>
+								<div class="col-md-7">
+									<input id="nEks" class="form-control" style="text-align: center; margin-top: 5px;" type="number" value="3" name="katsayi" placeholder="3">
+								</div>
+
+							</div>
+							<div style="height: 25px;"></div>
+						</div>
+					</div>
+		</div>
+	</div>
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-lg-12 col-md-12 col-sm-12">
+			<div style="padding-top: 5px;">
+				<div style="width: 100%; font-size: 18px;">
+					Yazdır
+				</div>
+				<div><hr style="margin-top: 3px; margin-bottom: 8px;"/></div>
+
+
+			<div class="card" style="margin-top: 10px; padding: 10px;">
+				<div>
+					Dosya Yükle
+					<hr style="margin-top: 5px; margin-bottom: 5px;" />
+				</div>
+					<form method="post" enctype="multipart/form-data">
+						<div class="form-group col-md-10">
+							<input type="file" class="form-control-file border" name="myfile">
+						</div>
+						<div class="col-md-2" align="center">
+							<button type="submit" class="btn btn-outline-primary" style="padding-top: 3px; padding-bottom: 3px; padding-left: 20px; padding-right: 20px;">Yükle &nbsp;<span class='glyphicon glyphicon-check'></span></button>
+						</div>
+					</form>
+			</div>
+
+				<div class="card" style="padding-left: 5px; padding-right: 5px; margin-top: 10px;">
+					<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Dosya Adı</th>
+									<th>Baskı Süresi</th>
+									<th class="text-right">Kayıt Tarihi</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for gcode in gcodes %}
+								<tr>
+									<td>
+										<button onclick="print('{{ gcode.2 }}')" alt="Yazdır" data-toggle="modal" data-target="#myModal" class="btn btn-outline-primary"><span class='glyphicon glyphicon-ok'></span></button>
+										<button onclick="download('{{ gcode.2 }}')" alt="Kaydet" data-toggle="popover" data-trigger="hover" class="btn btn-outline-warning"><span class='glyphicon glyphicon-download-alt'></span></button>
+										<button onclick="remove('{{ gcode.2 }}')" alt="Kaydet" data-toggle="popover" data-trigger="hover" class="btn btn-outline-danger"><span class='glyphicon glyphicon-remove'></span></button>
+									</td>
+									<td>{{ gcode.0 }}</td>
+									<td>{{ gcode.3 }}</td>
+									<td class="text-right">{{ gcode.1 }}</td>
+								</tr>
+                    			{% endfor %}
+							</tbody>
+						</table>
+				</div>
+			</div>
+
+			
+			<div class="card" style="margin-top: 10px; padding: 10px;">
+				<div>
+					Özel Komut Gönder
+					<hr style="margin-top: 5px; margin-bottom: 5px;" />
+				</div>
+				<div class="row">
+					<div class="col-md-10">
+						<input id="customcmdtext" type="text" class="form-control" name="cmd" placeholder=">_">
+					</div>
+					<div class="col-md-2">
+						<button onclick="customcmd()" type="submit" class="btn btn-outline-primary" style="padding-top: 2px; padding-bottom: 2px;">Gönder &nbsp;<span class='glyphicon glyphicon-share'></span></button>
+					</div>
+				</div>
+				<span id="customcmdsendtext" style="color: green;"></span>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<div style="height: 50px;">
+	
+</div>
+
+<footer style="background-color: white;">
+	<hr/>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4" style="padding: 15px;">
+				<div class="row">
+					<div class="col-md-4" align="center">
+						<span class='glyphicon glyphicon-exclamation-sign' style="font-size: 50px; margin-top: 5px; -webkit-text-stroke: 2px white;"></span>
+					</div>
+					<div class="col-md-8" style="font-size: 13px;">
+						<p>Hata ile karşılaşmanız durumunda	<a href="">3d.argesta.com.tr/report</a> adresinden bizlere iletiniz.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4" style="padding: 15px;">
+				<div class="row">
+					<div class="col-md-4" align="center">
+						<span class='glyphicon glyphicon-floppy-saved' style="font-size: 50px; margin-top: 5px; -webkit-text-stroke: 2px white;"></span>
+					</div>
+					<div class="col-md-8" style="font-size: 13px;">
+						<p>Ayrıntılı yardım dökümanına <a href="">3d.argesta.com.tr/documents</a> adresinden ulaşabilirsiniz.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4" style="padding: 15px;">
+				<div class="row">
+					<div class="col-md-4" align="center">
+						<span class='glyphicon glyphicon-registration-mark' style="font-size: 50px; margin-top: 5px; -webkit-text-stroke: 1px white;"></span>
+					</div>
+					<div class="col-md-8" style="font-size: 13px;">
+						<p>Tüm hakları <b>ARGESTA Makine Mühendislik</b> şirketine aittir. Kopyalanması yasaktır.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+<script>
+$( document ).ready(function() {
+	$.ajax({
+	    url: "http://ranork.net/3d/req.php",
+	    type: "GET",
+	    data: { "req": "version" },
+	    success: function(sonuc){
+	    	toastr.options = {
+				  "closeButton": false,
+				  "debug": false,
+				  "newestOnTop": false,
+				  "progressBar": false,
+				  "positionClass": "toast-bottom-right",
+				  "preventDuplicates": false,
+				  "onclick": null,
+				  "showDuration": "300",
+				  "hideDuration": "1000",
+				  "timeOut": "5000",
+				  "extendedTimeOut": "1000",
+				  "showEasing": "swing",
+				  "hideEasing": "linear",
+				  "showMethod": "fadeIn",
+				  "hideMethod": "fadeOut"
+				}
+	        if (sonuc == "2") {
+	        	toastr["success"]("Son sürüm yazılım kullanıyorsunuz!", {"positionClass": "toast-bottom-right"});
+	        }
+
+	        else {
+	        	toastr["warning"]("Yazılım sürümü güncellemeniz gerekli!")
+	        }
+	    }
+	});
+});
+
+window.setInterval(function(){
+	$.ajax({
+		url: "/yanit/",
+		type: "POST",
+		data: { "istek": "answer" },
+		success: function(sonuc){
+				var values = sonuc.split("*");
+
+				var ETempCur = values[0];
+				var ETempTar = values[1];
+				$(".ETemp").html(ETempCur + " <span class='glyphicon glyphicon-chevron-right' style='color: #007cb0; -webkit-text-stroke: 2px white;'></span> " + ETempTar);
+
+				var BTempCur = values[2];
+				var BTempTar = values[3];
+				$(".BTemp").html(BTempCur + " <span class='glyphicon glyphicon-chevron-right' style='color: #007cb0; -webkit-text-stroke: 2px white;'></span> " + BTempTar);
+
+				if (ETempTar != "Kapali" || BTempTar != "Kapali") {
+						document.getElementById("PREHEATCAPTION").innerHTML = "ÖN ISITMA BİTİR";
+						document.getElementById("PREHEATICON").innerHTML = "<span class='glyphicon glyphicon-leaf' style='color: #007cb0; text-shadow: 2px 2px 4px #007cb0;'></span>";
+				}
+				else {
+						document.getElementById("PREHEATCAPTION").innerHTML = "ÖN ISITMA BAŞLAT"; 
+						document.getElementById("PREHEATICON").innerHTML = "<span class='glyphicon glyphicon-leaf' style='color: #b3b3b3;'></span>";
+				}
+
+				var Xkoor = values[4];
+				var Ykoor = values[5];
+				var Zkoor = values[6];
+
+				$("#XCoor").html(Xkoor);
+				$("#YCoor").html(Ykoor);
+				$("#ZCoor").html(Zkoor);
+
+				// $(".sonuc").html(sonuc);
+		}
+	});
+}, 500);
+
+window.setInterval(function(){
+	$.ajax({
+	    url: "/printjobajax/",
+	    type: "POST",
+	    data: { "istek": "isPrinting" },
+	    success: function(sonuc){
+	        if (sonuc.startsWith("True")) {
+	        	var values = sonuc.split("*");
+	        	var loc = values[1].split("/");
+	        	location.href = '/printjob/?filenames=' + loc[(loc.length - 1)];
+	        }
+	        else if (sonuc == "Error") {
+	        	console.log("Sunucu bağlantı hatası!");
+	        	alert("Sunucu bağlantı hatası!");
+	        }
+	        else if (sonuc == "False") {
+	        	//console.log("Yazdırma işlemi başarılı bir şekilde devam ediyor.");
+	        }
+	    }
+	});
+}, 1000);
+
+function preheating() {
+    if ( $("#PREHEATCAPTION").text() == "ÖN ISITMA BAŞLAT" ) {
+	    //document.getElementById("PREHEATCAPTION").innerHTML = "ÖN ISITMA BİTİR";
+	    //document.getElementById("PREHEATICON").innerHTML = "<span class='glyphicon glyphicon-leaf' style='color: #007cb0;'></span>";
+	    $.ajax({
+	        url: "/preheat/",
+	        type: "POST",
+	        data: { "istek": "NOZULABS" },
+	        success: function(sonuc){}
+	    });
+	    $.ajax({
+	        url: "/preheat/",
+	        type: "POST",
+	        data: { "istek": "BEDABS" },
+	        success: function(sonuc){}
+	    });
+	}
+	else {
+	    //document.getElementById("PREHEATCAPTION").innerHTML = "ÖN ISITMA BAŞLAT"; 
+	    //document.getElementById("PREHEATICON").innerHTML = "<span class='glyphicon glyphicon-leaf' style='color: #b3b3b3;'></span>";
+	    exttempres();
+	    bedtempres();
+	}
+}
+
+function bedtempset() { 
+	$.ajax({
+	        url: "/setbedtemp/",
+	        type: "POST",
+	        data: { "derece": document.getElementById('bedtemp').value },
+	        success: function(sonuc){}
+	    });
+}
+function bedtempres() { 
+	$.ajax({
+	        url: "/setbedtemp/",
+	        type: "POST",
+	        data: { "derece": "0" },
+	        success: function(sonuc){}
+	    });
+}
+
+function exttempset() { 
+	$.ajax({
+	        url: "/setexttemp/",
+	        type: "POST",
+	        data: { "derece": document.getElementById('exttemp').value },
+	        success: function(sonuc){}
+	    });
+}
+function exttempres() { 
+	$.ajax({
+	        url: "/setexttemp/",
+	        type: "POST",
+	        data: { "derece": "0" },
+	        success: function(sonuc){}
+	    });
+}
+
+function YARTI2() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "y",
+	        		"distance": String(document.getElementById('nHareket').value * 2) },
+	        success: function(sonuc){}
+	    });
+}
+function YARTI() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "y",
+	        		"distance": String(document.getElementById('nHareket').value) },
+	        success: function(sonuc){}
+	    });
+}
+function YEKSI2() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "y",
+	        		"distance": "-" + String(document.getElementById('nHareket').value * 2) },
+	        success: function(sonuc){}
+	    });
+}
+function YEKSI() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "y",
+	        		"distance": "-" + String(document.getElementById('nHareket').value) },
+	        success: function(sonuc){}
+	    });
+}
+
+function XARTI2() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "x",
+	        		"distance": String(document.getElementById('nHareket').value * 2) },
+	        success: function(sonuc){}
+	    });
+}
+function XARTI() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "x",
+	        		"distance": String(document.getElementById('nHareket').value) },
+	        success: function(sonuc){}
+	    });
+}
+function XEKSI2() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "x",
+	        		"distance": "-" + String(document.getElementById('nHareket').value * 2) },
+	        success: function(sonuc){}
+	    });
+}
+function XEKSI() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "x",
+	        		"distance": "-" + String(document.getElementById('nHareket').value) },
+	        success: function(sonuc){}
+	    });
+}
+
+
+function ZARTI() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "z",
+	        		"distance": String(document.getElementById('nHareket').value) },
+	        success: function(sonuc){}
+	    });
+}
+function ZEKSI() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "z",
+	        		"distance": "-" + String(document.getElementById('nHareket').value) },
+	        success: function(sonuc){}
+	    });
+}
+
+function EARTI() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "e",
+	        		"distance": String(document.getElementById('nEks').value) },
+	        success: function(sonuc){}
+	    });
+}
+function EARTI2() { 
+	$.ajax({
+	        url: "/manualmove/",
+	        type: "POST",
+	        data: { "target": "e",
+	        		"distance": String(document.getElementById('nEks').value * 2) },
+	        success: function(sonuc){}
+	    });
+	//console.log(String(document.getElementById('nEks').value * 2))
+}
+
+function download(filename) { 
+	var win = window.open('media/' + filename, '_blank');
+	win.focus();
+}
+
+function stateChange(newState) {
+    setTimeout(function(){
+        if(newState == -1){
+			document.getElementById('customcmdsendtext').innerHTML = "";
+        }
+    }, 3000);
+}
+
+function customcmd() { 
+	$.ajax({
+	        url: "/customcmd/",
+	        type: "POST",
+	        data: { "cmd": String(document.getElementById('customcmdtext').value) },
+	        success: function(sonuc){}
+	    });
+	document.getElementById('customcmdtext').value = "";
+	stateChange(-1);
+    document.getElementById('customcmdsendtext').innerHTML = "Gönderim Başarılı!";
+	
+}
+
+function XHOME() { 
+	$.ajax({
+	        url: "/customcmd/",
+	        type: "POST",
+	        data: { "cmd": "G28X" },
+	        success: function(sonuc){}
+	    });
+}
+
+function YHOME() { 
+	$.ajax({
+	        url: "/customcmd/",
+	        type: "POST",
+	        data: { "cmd": "G28Y" },
+	        success: function(sonuc){}
+	    });
+}
+
+function ZHOME() { 
+	$.ajax({
+	        url: "/customcmd/",
+	        type: "POST",
+	        data: { "cmd": "G28Z" },
+	        success: function(sonuc){}
+	    });
+}
+function ALLHOME() {
+	XHOME();
+	YHOME();
+	ZHOME();
+}
+
+function print(filename) {
+	console.log(filename + " yazdırılacak.");
+
+    console.log(filename);
+    var payload = {
+      file: filename
+    };
+    var form = document.createElement('form');
+    form.style.visibility = 'hidden'; // no user interaction is necessary
+    form.method = 'GET'; // forms by default use GET query strings
+    form.action = '/printjob/';
+    /*for (key in Object.keys(payload)) {
+      var input = document.createElement('input');
+      input.name = key;
+      input.id = key;
+      input.value = payload[key];
+      form.appendChild(input); // add key/value pair to form
+    }*/
+    var input = document.createElement('input')
+    input.name = "filenames";
+    input.value = filename;
+    form.appendChild(input);
+    document.body.appendChild(form); // forms cannot be submitted outside of body
+    form.submit(); // send the payload and navigate
+    //alert("Finished");
+}
+
+function remove(filename) {
+	$.ajax({
+	        url: "/yanit/",
+	        type: "POST",
+	        data: { "istek": "removefile",
+	        "filename" : String(filename) },
+	        success: function(sonuc){
+	        	if (sonuc == "True") {
+	        		location.reload();
+	        	}
+	        }
+	    });
+}
+			
+</script>
+</body>
+</html>

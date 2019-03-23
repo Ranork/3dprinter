@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /home/pi/argesta
+cd Screen
+python3 manage.py runserver

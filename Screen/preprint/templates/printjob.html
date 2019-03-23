@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<title>ARGESTA 3D</title>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/css/fa-solid.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <script src="/static/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    	.btn {
+    		border-radius: 2px;
+    		font-weight: bold;
+    	}
+    	.row {
+    		margin-right: 0px;
+    	}
+    	.bg-dark {
+    		color: white;
+    	}
+    	a:hover {
+    		text-decoration: none;
+    	}
+
+    	@keyframes blinker {  
+		  50% { opacity: 0.75; }
+		}
+		
+		.card {
+			border-radius: 2px;
+		}
+		.tablo td {
+			padding-top: 20px;
+			padding-bottom: 20px;
+			font-size: 18px;
+		}
+		.tablo th {
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.activated {
+			background-color: rgba(0, 0, 0, 0.2);
+		}
+		@keyframes blinker2 {  
+		  50% { color: red; }
+		}
+    </style>
+	<script type="text/javascript">
+$(document).ready(function() {
+
+} );
+
+window.setInterval(function(){
+	$.ajax({
+		url: "/filecontrol/",
+		type: "POST",
+		data: { "istek": "answer" },
+		success: function(sonuc){
+			var values = sonuc.split("*");
+
+			var ETempCur = values[0];
+			var ETempTar = values[1];
+			$("#ETemp").html(ETempCur + " <i class='fas fa-angle-right' style='color: lightgreen;'></i> " + ETempTar);
+
+			var BTempCur = values[2];
+			var BTempTar = values[3];
+			$("#BTemp").html(BTempCur + " <i class='fas fa-angle-right' style='color: lightgreen;'></i> " + BTempTar);
+
+			var Xkoor = values[4];
+			var Ykoor = values[5];
+			var Zkoor = values[6];
+
+			//$("#XCoor").html(Xkoor);
+			//$("#YCoor").html(Ykoor);
+			$("#ZCoor").html(Zkoor);
+
+
+
+		}
+	});
+
+
+
+	$.ajax({
+		url: "/filecontrol/",
+		type: "POST",
+		data: { "istek": "printstate" },
+		success: function(sonuc){
+			var values = sonuc.split("*");
+
+			var PrintedLine = 0;
+			var PrintLine = 0;
+
+			PrintLine = values[0];
+			PrintedLine = values[1];
+
+			var yuzde = (PrintedLine / PrintLine)*100;
+
+			$(".progress-bar").css("width",yuzde + "%	");
+
+			$("#lines").html(PrintedLine + " / " + PrintLine);
+
+			var remainingTime = values[2];
+
+			if (remainingTime <= 300) {
+				remainingTime = 300;
+			}
+
+			var remainingMinute = Math.floor(remainingTime/60);
+			var remainingSeconds = remainingTime - (remainingMinute*60);
+
+			$("#timeRemaining").html(remainingMinute + " Dakika " + remainingSeconds + " Saniye");
+
+
+		}
+	});
+
+	$.ajax({
+		url: "/filecontrol/",
+		type: "POST",
+		data: { "istek": "isPrinting" },
+		success: function(sonuc){
+			if (sonuc == "False") {
+				location.replace("/");
+			}
+
+
+		}
+	});
+}, 1500);
+
+function printStopBTN() {
+	$.ajax({
+		url: "/filecontrol/",
+		type: "POST",
+		data: { "istek": "stop" },
+		success: function(sonuc){}
+	});
+}
+	</script>
+</head>
+<body style="height: 480px; width: 800px; padding: 0px;">
+
+<nav class="bg-dark" style="padding: 5px 10px;">
+	<div class="row">
+		<div class="col-md-1">
+			<button type="button" class="btn btn-outline-light" style="padding: 10px 18px;">  <i class="far fa-eye-slash"></i>  </button>
+		</div>
+		<div class="col-md-7" style=" margin-top: 10px;">
+			<a href="#" style="color: white;">ARGESTA 3D Yazıcı &nbsp; | &nbsp; Yazdırılıyor</a>
+		</div>
+		<div class="col-md-4" style=" margin-top: 10px;" align="right">
+			<a href="#" style="color: lightgreen;"><i class="fas fa-check"></i> Yazılım Güncel!</a>
+			&nbsp;
+			<i class="fas fa-sign-in-alt" style="color: lightgreen;"></i>&nbsp;
+			<i class="fas fa-wifi" style="color: lightgreen;"></i>
+		</div>
+	</div>
+</nav>
+
+<div class="row" style="height: 424px; background-image: url('https://as1.ftcdn.net/jpg/01/83/60/76/500_F_183607639_b99WlxPHAV7qWlatHb4YbiOAJzndXImz.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center;">
+
+	<div class="col-md-10" style="padding: 10px; padding-left: 40px;">
+		<div class="row" style="height: 100%;">
+			<div class="col-md-12" style="height: 100%;">
+				<div class="card" style="height: 402px; overflow-y: auto;">
+
+					<div class="bg-dark" style="padding: 20px 25px; width: 100%;">
+						<h3><i class="fas fa-file-signature"></i> {{ filename }}</h3>
+					</div>
+
+					<div style="padding: 20px; margin-top: 8px;">
+						<div class="progress" style="height: 25px;">
+						  <div class="progress-bar bg-success" role="progressbar" style="width: 100%;  background-color: lightgreen;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+						</div>
+					</div>
+
+					<div style="padding: 10px 20px;">
+						<p style="font-size: 18px;"><span style="font-weight: bold;">Kalan Süre:</span> <span id="timeRemaining">3 Saat 15 Dakika</span></p>
+						<p style="font-size: 18px;"><span style="font-weight: bold;">Satır:</span> <span id="lines">175 / 2450</span></p>
+					</div>
+					
+					<div class="row">
+						<div class="col-md-4 bg-dark" style="padding-bottom: 20px; margin-top: 15px;">
+							<div class="row" style="padding-left: 15px; margin-top: 25px;">
+								<div class="col-md-2" align="center"></div>
+								<div class="col-md-8" align="center" style="border-left-width: 2px; border-left-style: solid; border-left-color: white; border-right-width: 2px; border-right-style: solid; border-right-color: white;">
+									<div style="font-weight: bold; font-size: 30px;">Z</div>
+									<div id="ZCoor" style="font-size: 14px;">0</div>
+								</div>
+								<div class="col-md-2" align="center"></div>
+							</div>
+						</div>
+						<div class="col-md-8 bg-dark" style="padding-bottom: 20px; margin-top: 15px;">
+							<div class="row" style="margin-top: 20px;">
+								<div class="col-md-6" align="center">
+									<i class="fas fa-inbox" style="font-size: 40px; -webkit-text-stroke: 2px white;"></i>
+									<div style="font-size: 15px;">TABLA</div>
+									<div id="BTemp" style="font-size: 14px;">0°C <i class="fas fa-angle-right" style="color: lightgreen;"></i> Kapalı</div>
+								</div>
+								<div class="col-md-6" align="center">
+									<i class="fas fa-burn" style="transform: rotate(180deg); font-size: 40px; -webkit-text-stroke: 2px white;"></i>	
+									<div style="font-size: 15px;">NOZUL</div>
+									<div id="ETemp" style="font-size: 14px;">0°C <i class="fas fa-angle-right" style="color: lightgreen;"></i> Kapalı</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-2" style="height: 100%; background-color: #73808c; -webkit-box-shadow: inset 3px 0px 10px 0px rgba(52,58,64,0.58); padding-right: 15px; padding-top: 15px;">
+		<button type="button" class="btn btn-light" style="font-size: 20px; height: 80px; width: 100%;" disabled> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-pause"></i>
+			</div>
+			<div style="font-size: 15px;">
+				DURAKLAT
+			</div>
+		</button>
+		<button onclick="printStopBTN()" id="printBTN" type="button" class="btn btn-light" style="font-size: 30px; height: 80px; width: 100%; margin-top: 230px; animation: blinker2 1s linear infinite; color: darkred;"> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-stop"></i>
+			</div>
+			<div style="font-size: 15px;">
+				DURDUR
+			</div>
+		</button>
+	</div>
+	
+</div>
+
+</body>
+
+</html>

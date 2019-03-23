@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /home/pi/argesta/web
+python3 manage.py runserver 0:3500

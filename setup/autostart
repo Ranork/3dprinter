@@ -1,0 +1,7 @@
+sudo nano etc/xdg/lxsession/LXDE-pi/autostart
+
+add
+
+@lxterminal -e bash /home/pi/Desktop/start.sh
+
+save and reboot

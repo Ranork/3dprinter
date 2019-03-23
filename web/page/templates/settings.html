@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Argesta 3D Printer</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet"> 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<style type="text/css">
+		body{
+			font-family: 'Roboto Slab', serif;
+			background-color: #f7f7f7;
+		}
+		a {
+			font-family: 'Roboto Slab', serif;
+		}
+		.outer {
+			display: table;
+			osition: absolute;
+			height: 100%;
+			width: 100%;
+		}
+
+		.middle {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		.inner {
+			text-align: right;
+			width: 400px;
+			font-size: 17px;
+			color: green;
+			/*whatever width you want*/
+		}
+		.card2 {
+			border-radius: 0px;
+			border-left-width: 0px;
+			border-top-width: 0px;
+			border-bottom-width: 0px;
+		}
+		td .btn{
+			padding: 1px 5px;
+		}
+		.btn {
+			border-radius: 0px;
+		}
+		.hareket td {
+			padding: 0px; margin: 0px;
+		}
+		.preheat:hover {
+			border-color: #007cb0;
+		}
+		.card {
+			border-radius: 0px;
+		}
+		</style>
+</head>
+<body>
+
+<div class="container">
+	
+	<div class="row" style="margin-top: 15px;">
+		<div class="col-md-6">
+			<a href="/"><img src="http://argesta.com.tr/img/biglogo.png" style="width: 300px;"></a>
+		</div>
+		<div class="col-md-6" align="right" style="padding-top: 20px; font-size: 20px; color: green;">
+		Yazıcınız Kullanıma Hazır &nbsp; <span class="glyphicon glyphicon-ok"></span>
+		</div>
+					
+	</div>
+	<hr/>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-2">
+			<a href="/">
+				<div class="card settings" style="border-radius: 0px; padding: 5px; padding-top: 15px;" align="center">
+					<div><span class="glyphicon glyphicon-chevron-left" style='color: #007cb0; font-size: 25px;'></span></div>
+					<div style="margin-top: 10px;">
+						<p style="color: black !important;">Geri</p>
+					</div>
+				</div>
+			</a>
+			<a href="#" onclick="saveSettings()">
+				<div class="card settings" style="border-radius: 0px; padding: 5px; padding-top: 15px; margin-top: 10px;" align="center">
+					<div><span class="glyphicon glyphicon-floppy-disk" style='color: #007cb0; font-size: 25px;'></span></div>
+					<div style="margin-top: 10px;">
+						<p style="color: black !important;">Kaydet</p>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-md-10">
+			<div class="row">
+				<div class="col-md-8">
+					
+				</div>
+				<div class="col-md-2">
+					<a href="#">
+						<div class="card settings" style="border-radius: 0px; padding: 5px; padding-top: 15px;" align="center">
+							<div><span class="glyphicon glyphicon-globe" style='color: #007cb0; font-size: 25px;'></span></div>
+							<div style="margin-top: 10px;">
+								<p style="color: black !important;">Türkçe</p>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-2">
+					<a href="#">
+						<div class="card settings" style="border-radius: 0px; padding: 5px; padding-top: 15px;" align="center">
+							<div><span class="glyphicon glyphicon-signal" style='color: #007cb0; font-size: 25px;'></span></div>
+							<div style="margin-top: 10px;">
+								<p style="color: black !important;">ARGESTA</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card" style="margin-top: 10px; padding: 10px;">
+						<h3>Standar Sıcaklık Ayarları</h3>
+						<hr style="margin-top: 5px; margin-bottom: 15px;" />
+						<div style="padding-top: 20px;">
+							<label>ABS Tabla Sıcaklığı</label>
+							<input class="form-control" type="number" id="TablaABS" value="{{ TablaABS }}">
+						</div>
+						<div style="padding-top: 20px;">
+							<label>ABS Nozul Sıcaklığı</label>
+							<input class="form-control" type="number" id="NozulABS" value="{{ NozulABS }}">
+						</div>
+						<hr style="margin-bottom: 0px;" />
+						<div style="padding-top: 20px;">
+							<label>PLA Tabla Sıcaklığı</label>
+							<input class="form-control" type="number" id="TablaPLA" value="{{ TablaPLA }}">
+						</div>
+						<div style="padding-top: 20px;">
+							<label>PLA Nozul Sıcaklığı</label>
+							<input class="form-control" type="number" id="NozulPLA" value="{{ NozulPLA }}">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--<div class="row" style="margin-top: 15px;">
+		<div class="col-md-4">
+			<div class="card" style="padding: 10px;">
+				<div style="width: 100%; font-size: 18px;">
+					Pozisyon Bilgisi
+				</div>
+				<div><hr style="margin-top: 3px; margin-bottom: 8px;"/></div>
+
+				<div class="row">
+					<div class="col" align="center">
+						<b style='color: #007cb0;'>X: </b>0.0
+					</div>
+					<div class="col" align="center">
+						<b style='color: #007cb0;'>Y: </b>0.0
+					</div>
+					<div class="col" align="center">
+						<b style='color: #007cb0;'>Z: </b>0.0
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>-->
+</div>
+
+<div style="height: 50px;">
+
+<footer class="fixed-bottom" style="background-color: white;">
+	<hr/>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4" style="padding: 15px;">
+				<div class="row">
+					<div class="col-md-4" align="center">
+						<span class='glyphicon glyphicon-exclamation-sign' style="font-size: 50px; margin-top: 5px; -webkit-text-stroke: 2px white;"></span>
+					</div>
+					<div class="col-md-8" style="font-size: 13px;">
+						<p>Hata ile karşılaşmanız durumunda	<a href="">3d.argesta.com.tr/report</a> adresinden bizlere iletiniz.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4" style="padding: 15px;">
+				<div class="row">
+					<div class="col-md-4" align="center">
+						<span class='glyphicon glyphicon-floppy-saved' style="font-size: 50px; margin-top: 5px; -webkit-text-stroke: 2px white;"></span>
+					</div>
+					<div class="col-md-8" style="font-size: 13px;">
+						<p>Ayrıntılı yardım dökümanına <a href="">3d.argesta.com.tr/documents</a> adresinden ulaşabilirsiniz.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4" style="padding: 15px;">
+				<div class="row">
+					<div class="col-md-4" align="center">
+						<span class='glyphicon glyphicon-registration-mark' style="font-size: 50px; margin-top: 5px; -webkit-text-stroke: 1px white;"></span>
+					</div>
+					<div class="col-md-8" style="font-size: 13px;">
+						<p>Tüm hakları <b>ARGESTA Makine Mühendislik</b> şirketine aittir. Kopyalanması yasaktır.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+<script>
+
+function saveSettings() {
+	$.ajax({
+        url: "/sAjax/",
+        type: "POST",
+        data: { "istek": "save",
+        "TablaABS": document.getElementById('TablaABS').value,
+        "TablaPLA": document.getElementById('TablaPLA').value,
+        "NozulABS": document.getElementById('NozulABS').value,
+        "NozulPLA": document.getElementById('NozulPLA').value },
+        success: function(sonuc){
+            location.href = "/"
+        }
+    });
+}
+
+function PrintStop() {
+	$.ajax({
+	    url: "/printjobajax/",
+	    type: "POST",
+	    data: { "istek": "PrintStop" },
+	    success: function(sonuc){}
+	});
+}
+
+function PrintPause() {
+    $.ajax({
+        url: "/printjobajax/",
+        type: "POST",
+        data: { "istek": "PrintPause" },
+        success: function(sonuc){}
+    });
+}
+
+function PrintContinue() {
+    $.ajax({
+        url: "/printjobajax/",
+        type: "POST",
+        data: { "istek": "PrintContinue" },
+        success: function(sonuc){}
+    });
+}
+
+</script>

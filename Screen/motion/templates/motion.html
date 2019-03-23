@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<title>ARGESTA 3D</title>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/css/fa-solid.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <script src="/static/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    	.btn {
+    		border-radius: 2px;
+    		font-weight: bold;
+    	}
+    	.row {
+    		margin-right: 0px;
+    	}
+    	.bg-dark {
+    		color: white;
+    	}
+    	a:hover {
+    		text-decoration: none;
+    	}
+
+    	@keyframes blinker {  
+		  50% { opacity: 0.75; }
+		}
+    </style>
+</head>
+<body style="height: 480px; width: 800px; padding: 0px;">
+
+<nav class="bg-dark" style="padding: 5px 10px;">
+	<div class="row">
+		<div class="col-md-1">
+			<a href="/"><button type="button" class="btn btn-outline-light" style="padding: 10px 15px;"> &nbsp; <i class="fas fa-chevron-left"></i> &nbsp; </button></a>
+		</div>
+		<div class="col-md-7" style=" margin-top: 10px;">
+			<a href="#" style="color: white;">ARGESTA 3D Yazıcı &nbsp; | &nbsp; Hareket Kontrol</a>
+		</div>
+		<div class="col-md-4" style=" margin-top: 10px;" align="right">
+			<a href="#" style="color: lightgreen;"><i class="fas fa-check"></i> Yazılım Güncel!</a>
+			&nbsp;
+			<i class="fas fa-sign-in-alt" style="color: lightgreen;"></i>&nbsp;
+			<i class="fas fa-wifi" style="color: lightgreen;"></i>
+		</div>
+	</div>
+</nav>
+
+<div class="row" style="height: 424px; background-image: url('https://as1.ftcdn.net/jpg/01/83/60/76/500_F_183607639_b99WlxPHAV7qWlatHb4YbiOAJzndXImz.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center;">
+	<div class="col-md-2" style=" background-color: #73808c; -webkit-box-shadow: inset -3px 0px 10px 0px rgba(52,58,64,0.58);">
+		<div id="katsayilar" style="padding: 12px 0px; padding-left: 10px;">
+			<button id="katsayi" type="button" class="btn btn-light" style="width: 100%; font-size: 30px; margin-bottom: 8px;">0.1</button>
+			<button id="katsayi" type="button" class="btn btn-light" style="width: 100%; font-size: 30px; margin-bottom: 8px;">1</button>
+			<button id="katsayi" type="button" class="btn btn-outline-light" style="width: 100%; font-size: 30px; margin-bottom: 8px;">10</button>
+			<button id="katsayi" type="button" class="btn btn-light" style="width: 100%; font-size: 30px; margin-bottom: 8px;">25</button>
+			<button id="katsayi" type="button" class="btn btn-light" style="width: 100%; font-size: 30px; margin-bottom: 8px;">50</button>
+			<button id="katsayi" type="button" class="btn btn-light" style="width: 100%; font-size: 30px;">100</button>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div style="padding: 5px; font-size: 25px;" align="center">
+			Hareket Kontrol
+		</div>
+		<div class="row">
+			<div class="col-md-4" style="padding-right: 0px; padding-left: 30px;">
+				<button onclick="topleft()" type="button" class="btn btn-outline-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-left" style="transform: rotate(45deg);"></i></button>
+			</div>
+			<div class="col-md-4">
+				<button onclick="topmove()" type="button" class="btn btn-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-up"></i></button>
+			</div>
+			<div class="col-md-4" style="padding-left: 0px; padding-right: 30px;">
+				<button onclick="topright()" type="button" class="btn btn-outline-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-right" style="transform: rotate(315deg);"></i></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4" style="padding-right: 0px; padding-left: 30px;">
+				<button onclick="left()" type="button" class="btn btn-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-left"></i></button>
+			</div>
+			<div class="col-md-4">
+				<button onclick="homeXY()" type="button" class="btn btn-dark" style="width: 100%; font-size: 25px; margin-bottom: 10px;">
+					<div>
+						<i class="fas fa-home"></i>
+					</div>
+					<div style="font-size: 16px;">
+						X , Y
+					</div>
+				</button>
+			</div>
+			<div class="col-md-4" style="padding-left: 0px; padding-right: 30px;">
+				<button onclick="right()" type="button" class="btn btn-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-right"></i></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4" style="padding-right: 0px; padding-left: 30px;">
+				<button onclick="bottomleft()" type="button" class="btn btn-outline-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-left" style="transform: rotate(315deg);"></i></button>
+			</div>
+			<div class="col-md-4">
+				<button onclick="bottom()" type="button" class="btn btn-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-down"></i></button>
+			</div>
+			<div class="col-md-4" style="padding-left: 0px; padding-right: 30px;">
+				<button onclick="bottomright()" type="button" class="btn btn-outline-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-right" style="transform: rotate(45deg);"></i></button>
+			</div>
+		</div>
+		<hr/>
+		<div class="row">
+			<div class="col-md-4">
+				<button onclick="Zup()" type="button" class="btn btn-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-up"></i></button>
+			</div>
+			<div class="col-md-4">
+				<button onclick="homeZ()" type="button" class="btn btn-dark" style="width: 100%; font-size: 24px; margin-bottom: 10px;">
+					<div>
+						<i class="fas fa-home"></i>
+					</div>
+					<div style="font-size: 16px;">
+						Z
+					</div>
+				</button>
+			</div>
+			<div class="col-md-4">
+				<button onclick="Zdown()" type="button" class="btn btn-dark" style="width: 100%; font-size: 40px; margin-bottom: 10px;"><i class="fas fa-angle-down"></i></button>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-4" style="height: 100%; background-color: #73808c; -webkit-box-shadow: inset 3px 0px 10px 0px rgba(52,58,64,0.58); padding-right: 0px;">
+		<div style="padding: 10px; font-size: 25px; color: white;" align="center">
+			Ekstrüzyon
+		</div>
+		<div class="row">
+			<div class="col-md-6" align="center">
+				<button onclick="eksDouble()" type="button" class="btn btn-light" style="width: 100%; font-size: 40px; margin-bottom: 10px;">
+					<div style="margin-top: -5px;">
+						<i class="fas fa-angle-up"></i>
+					</div>
+					<div style="margin-top: -50px; margin-bottom: -5px;">
+						<i class="fas fa-angle-up"></i>
+					</div>
+				</button>
+			</div>
+			<div class="col-md-6" align="center">
+				<button onclick="eksDoubleINV()" type="button" class="btn btn-light" style="width: 100%; font-size: 40px; margin-bottom: 10px;">
+					<div style="margin-top: -5px;">
+						<i class="fas fa-angle-down"></i>
+					</div>
+					<div style="margin-top: -50px; margin-bottom: -5px;">
+						<i class="fas fa-angle-down"></i>
+					</div>
+				</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<button onclick="eks()" type="button" class="btn btn-light" style="width: 100%; font-size: 40px; margin-bottom: 10px;">
+					<i class="fas fa-angle-up"></i>
+				</button>
+			</div>
+			<div class="col-md-6">
+				<button onclick="eksINV()" type="button" class="btn btn-light" style="width: 100%; font-size: 40px; margin-bottom: 10px;">
+					<i class="fas fa-angle-down"></i>
+				</button>
+			</div>
+		</div>
+
+		<div class="bg-light" style="margin-right: 15px; border-radius: 2px; margin-top: 57px; padding: 10px;">
+			<div align="center" style="font-size: 20px;">
+				Koordinatlar
+			</div>
+			<hr style="margin-top: 10px;" />
+			<div class="row" style="padding-left: 15px;">
+				<div class="col-md-4" align="center">
+					<div style="font-weight: bold;">X</div>
+					<div id="XCoor">0</div>
+				</div>
+				<div class="col-md-4" align="center" style="border-right-width: 1px; border-left-width: 1px; border-color: #73808c; border-style: solid; border-top-width: 0px; border-bottom-width: 0px;">
+					<div style="font-weight: bold;">Y</div>
+					<div id="YCoor">0</div>
+				</div>
+				<div class="col-md-4" align="center">
+					<div style="font-weight: bold;">Z</div>
+					<div id="ZCoor">0</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
+
+<script>
+window.setInterval(function(){
+	$.ajax({
+		url: "/filecontrol/",
+		type: "POST",
+		data: { "istek": "answer" },
+		success: function(sonuc){
+				var values = sonuc.split("*");
+
+				var Xkoor = values[4];
+				var Ykoor = values[5];
+				var Zkoor = values[6];
+
+				$("#XCoor").html(Xkoor);
+				$("#YCoor").html(Ykoor);
+				$("#ZCoor").html(Zkoor);
+
+				// $(".sonuc").html(sonuc);
+		}
+	});
+}, 500);
+
+$(document).ready(function() { 
+	$("#katsayilar").find(".btn").click(function () {
+		$("#katsayilar").find(".btn-outline-light").addClass("btn-light");
+		$("#katsayilar").find(".btn-outline-light").removeClass("btn-outline-light");
+
+		$(this).removeClass("btn-light");
+		$(this).addClass("btn-outline-light");
+	});
+});
+
+function relativeCoordinates() {
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G91" },
+		success: function(sonuc){ }
+	});
+}
+
+function topmove() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1Y" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+function bottom() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1Y-" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+function left() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1X-" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+function right() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1X" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+
+function topleft() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1X-" + katsayi + "Y" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+function topright() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1X" + katsayi + "Y" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+function bottomleft() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1X-" + katsayi + "Y-" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+
+function bottomright() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1X" + katsayi + "Y-" + katsayi + "F3000" },
+		success: function(sonuc){ }
+	});
+}
+
+
+function homeXY() {
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G28XY"},
+		success: function(sonuc){ }
+	});
+}
+
+function homeZ() {
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G28Z"},
+		success: function(sonuc){ }
+	});
+}
+
+function Zup() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1Z-" + katsayi + "F2000" },
+		success: function(sonuc){ }
+	});
+}
+
+function Zdown() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1Z" + katsayi + "F2000" },
+		success: function(sonuc){ }
+	});
+}
+
+function eks() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1E-" + katsayi + "F500" },
+		success: function(sonuc){ }
+	});
+}
+
+function eksDouble() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1E-" + katsayi + "F1500" },
+		success: function(sonuc){ }
+	});
+}
+
+function eksINV() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1E" + katsayi + "F500" },
+		success: function(sonuc){ }
+	});
+}
+
+
+function eksDoubleINV() {
+	var katsayi = $("#katsayilar").find(".btn-outline-light").html();
+	relativeCoordinates();
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "G1E" + katsayi + "F1500" },
+		success: function(sonuc){ }
+	});
+}
+</script>
+
+</body>
+</html>

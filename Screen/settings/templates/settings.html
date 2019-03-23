@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<title>ARGESTA 3D</title>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/css/fa-solid.css">
+    <script src="/static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.numpad.js"></script>
+    <link rel="stylesheet" href="/static/css/jquery.numpad.css">
+    <style type="text/css">
+    	.btn {
+    		border-radius: 2px;
+    		font-weight: bold;
+    	}
+    	.row {
+    		margin-right: 0px;
+    	}
+    	.bg-dark {
+    		color: white;
+    	}
+    	a:hover {
+    		text-decoration: none;
+    	}
+
+    	@keyframes blinker {  
+		  50% { opacity: 0.75; }
+		}
+		
+		.card {
+			border-radius: 2px;
+		}
+    </style>
+</head>
+<body style="height: 480px; width: 800px; padding: 0px;">
+
+<div id="success" style="position: absolute; z-index: 999; background-color: rgba(0,0,0,0.7); padding: 153px 325px; color: lightgreen; font-size: 16px;">
+	<i class="far fa-check-circle" style="font-size: 150px; color: lightgreen;"></i>
+	<center>KAYIT BAŞARILI</center>
+</div>
+
+<nav class="bg-dark" style="padding: 5px 10px;">
+	<div class="row">
+		<div class="col-md-1">
+			<a href="/"><button type="button" class="btn btn-outline-light" style="padding: 10px 15px;"> &nbsp; <i class="fas fa-chevron-left"></i> &nbsp; </button></a>
+		</div>
+		<div class="col-md-7" style=" margin-top: 10px;">
+			<a href="#" style="color: white;">ARGESTA 3D Yazıcı &nbsp; | &nbsp; Ayarlar</a>
+		</div>
+		<div class="col-md-4" style=" margin-top: 10px;" align="right">
+			<a href="#" style="color: lightgreen;"><i class="fas fa-check"></i> Yazılım Güncel!</a>
+			&nbsp;
+			<i class="fas fa-sign-in-alt" style="color: lightgreen;"></i>&nbsp;
+			<i class="fas fa-wifi" style="color: lightgreen;"></i>
+		</div>
+	</div>
+</nav>
+
+<div class="row" style="height: 424px; background-image: url('https://as1.ftcdn.net/jpg/01/83/60/76/500_F_183607639_b99WlxPHAV7qWlatHb4YbiOAJzndXImz.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center;">
+
+	<div class="col-md-10" style="padding-top: 15px;">
+		<div class="row">
+			<div class="col-md-12" style="padding: 10px; padding-left: 30px;">
+				<div class="card" style="padding: 10px;">
+					<div class="row">
+						<div class="col-md-6" align="center">
+							<div style="font-size: 35px; ">
+								PLA
+							</div>
+							<div style="font-size: 15px;">
+								Standart Sıcaklık Ayarları
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div>
+								<form class="form-inline">
+									<label class="sr-only" for="inlineFormInputGroupUsername2">Tabla</label>
+								    <div class="input-group mb-2 mr-sm-2">
+								        <div class="input-group-prepend">
+								            <div class="input-group-text">Tabla&nbsp;</div>
+								        </div>
+								        <input id="PLATabla" type="text" class="form-control" style="background-color: white;" id="inlineFormInputGroupUsername2" placeholder="Username" value="{{ PLATabla }}">
+								        <div class="input-group-append">
+										    <span class="input-group-text" id="basic-addon2">°C</span>
+										</div>
+								    </div>
+								</form>
+							</div>
+							<div>
+								<form class="form-inline">
+									<label class="sr-only" for="inlineFormInputGroupUsername2">Tabla</label>
+								    <div class="input-group mb-2 mr-sm-2">
+								        <div class="input-group-prepend">
+								            <div class="input-group-text">Nozul</div>
+								        </div>
+								        <input id="PLANozul" type="text" class="form-control" style="background-color: white;" id="inlineFormInputGroupUsername2" placeholder="Username" value="{{ PLANozul }}">
+								        <div class="input-group-append">
+										    <span class="input-group-text" id="basic-addon2">°C</span>
+										</div>
+								    </div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="padding: 10px; padding-left: 30px;">
+				<div class="card" style="padding: 10px;">
+					<div class="row">
+						<div class="col-md-6" align="center">
+							<div style="font-size: 35px; ">
+								ABS
+							</div>
+							<div style="font-size: 15px;">
+								Standart Sıcaklık Ayarları
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div>
+								<form class="form-inline">
+									<label class="sr-only" for="inlineFormInputGroupUsername2">Tabla</label>
+								    <div class="input-group mb-2 mr-sm-2">
+								        <div class="input-group-prepend">
+								            <div class="input-group-text">Tabla&nbsp;</div>
+								        </div>
+								        <input id="ABSTabla" type="text" class="form-control" style="background-color: white;" id="inlineFormInputGroupUsername2" placeholder="Username" value="{{ ABSTabla }}">
+								        <div class="input-group-append">
+										    <span class="input-group-text" id="basic-addon2">°C</span>
+										</div>
+								    </div>
+								</form>
+							</div>
+							<div>
+								<form class="form-inline">
+									<label class="sr-only" for="inlineFormInputGroupUsername2">Tabla</label>
+								    <div class="input-group mb-2 mr-sm-2">
+								        <div class="input-group-prepend">
+								            <div class="input-group-text">Nozul</div>
+								        </div>
+								        <input id="ABSNozul" type="text" class="form-control" style="background-color: white;" id="inlineFormInputGroupUsername2" placeholder="Username" value="{{ ABSNozul }}">
+								        <div class="input-group-append">
+										    <span class="input-group-text" id="basic-addon2">°C</span>
+										</div>
+								    </div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="padding: 10px; padding-left: 30px;">
+				<div class="card" style="padding: 10px;">
+					<div class="row">
+						<div class="col-md-6" align="center">
+							<div style="font-size: 35px; ">
+								Filament
+							</div>
+							<div style="font-size: 15px;">
+								Cihaza Takılı Filament Tipi
+							</div>
+						</div>
+						<div class="col-md-3">
+							{% if FilamentType == "PLA"%}
+							<button onclick="PLABTN()" id="PLABTN" type="button" class="btn btn-dark" style="font-size: 20px; height: 80px; width: 100%;"> 
+								<div style="font-size: 25px;">
+									PLA
+								</div>
+							</button>
+							{% else %}
+							<button onclick="PLABTN()" id="PLABTN" type="button" class="btn btn-outline-dark" style="font-size: 20px; height: 80px; width: 100%;"> 
+								<div style="font-size: 25px;">
+									PLA
+								</div>
+							</button>
+							{% endif %}
+						</div>
+						<div class="col-md-3">
+							{% if FilamentType == "ABS"%}
+							<button onclick="ABSBTN()" id="ABSBTN" type="button" class="btn btn-dark" style="font-size: 20px; height: 80px; width: 100%;"> 
+								<div style="font-size: 25px;">
+									ABS
+								</div>
+							</button>
+							{% else %}
+							<button onclick="ABSBTN()" id="ABSBTN" type="button" class="btn btn-outline-dark" style="font-size: 20px; height: 80px; width: 100%;"> 
+								<div style="font-size: 25px;">
+									ABS
+								</div>
+							</button>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-2" style="height: 100%; background-color: #73808c; -webkit-box-shadow: inset 3px 0px 10px 0px rgba(52,58,64,0.58); padding-right: 15px;">
+		<button onclick="save()" type="button" class="btn btn-success" style="margin-top: 20px; font-size: 20px; height: 80px; width: 100%;"> 
+			<div style="font-size: 25px;">
+				<i class="far fa-save"></i>
+			</div>
+			<div style="font-size: 15px;">
+				KAYDET
+			</div>
+		</button>
+		<button type="button" class="btn btn-light" style="margin-top: 20px; font-size: 20px; height: 80px; width: 100%;" disabled> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-wifi"></i>
+			</div>
+			<div style="font-size: 15px;">
+				ARGESTA
+			</div>
+		</button>
+		<button type="button" class="btn btn-light" style="margin-top: 20px; font-size: 20px; height: 80px; width: 100%;" disabled> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-globe-americas"></i>
+			</div>
+			<div style="font-size: 15px;">
+				TÜRKÇE
+			</div>
+		</button>
+		<button type="button" class="btn btn-light" style="margin-top: 20px; font-size: 20px; height: 80px; width: 100%;"> 
+			<div style="font-size: 25px;">
+				<i class="fas fa-info-circle"></i>
+			</div>
+			<div style="font-size: 15px;">
+				HAKKINDA
+			</div>
+		</button>
+	</div>
+	
+</div>
+
+<script>
+$.fn.numpad.defaults.gridTpl = '<table class="table modal-content"></table>';
+$.fn.numpad.defaults.backgroundTpl = '<div class="modal-backdrop in" style="background-color: rgba(0,0,0,0.5);"></div>';
+$.fn.numpad.defaults.displayTpl = '<input type="text" class="form-control" style="font-size: 22px;" />';
+$.fn.numpad.defaults.buttonNumberTpl =  '<button type="button" class="btn btn-default" style="font-size: 22px;"></button>';
+$.fn.numpad.defaults.buttonFunctionTpl = '<button type="button" class="btn" style="width: 100%; font-size: 22px;"></button>';
+$.fn.numpad.defaults.textDone = 'Tamam';
+$.fn.numpad.defaults.textCancel = 'İptal';
+$.fn.numpad.defaults.textClear = 'Temizle';
+$.fn.numpad.defaults.textDelete = 'Sil';
+$.fn.numpad.defaults.onKeypadCreate = function(){$(this).find('.done').addClass('btn-primary');};
+{% if FilamentType == "PLA"%}
+var FilamentType = "PLA";
+{% else %}
+var FilamentType = "ABS";
+{% endif %}
+
+$(document).ready(function() { 
+	$("#success").hide();
+});
+
+$('#PLATabla').numpad();
+$('#PLANozul').numpad();
+$('#ABSTabla').numpad();
+$('#ABSNozul').numpad();
+
+function save() {
+	var PLATabla = $("#PLATabla").val();
+	var PLANozul = $("#PLANozul").val();
+	var ABSTabla = $("#ABSTabla").val();
+	var ABSNozul = $("#ABSNozul").val();
+
+	$.ajax({
+		url: "/setsetting/",
+		type: "POST",
+		data: { "set": "all",
+		"PLATabla": PLATabla,
+		"PLANozul": PLANozul,
+		"ABSTabla": ABSTabla,
+		"ABSNozul": ABSNozul,
+		"FilamentType": FilamentType },
+		success: function(sonuc){}
+	});
+	//location.reload();
+	$("#success").show().delay(2000).fadeOut();
+}
+
+function PLABTN() {
+	FilamentType = "PLA";
+	console.log("PLA SELECTED");
+	$("#PLABTN").addClass("btn-dark");
+	$("#PLABTN").removeClass("btn-outline-dark");
+	$("#ABSBTN").addClass("btn-outline-dark");
+	$("#ABSBTN").removeClass("btn-dark");
+}
+
+function ABSBTN() {
+	FilamentType = "ABS";
+	console.log("ABS SELECTED");
+	$("#ABSBTN").addClass("btn-dark");
+	$("#ABSBTN").removeClass("btn-outline-dark");
+	$("#PLABTN").addClass("btn-outline-dark");
+	$("#PLABTN").removeClass("btn-dark");
+}
+</script>
+
+</body>
+</html>

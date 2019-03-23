@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<title>ARGESTA 3D</title>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/css/fa-solid.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <script src="/static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.numpad.js"></script>
+    <link rel="stylesheet" href="/static/css/jquery.numpad.css">
+    <style type="text/css">
+    	.btn {
+    		border-radius: 2px;
+    		font-weight: bold;
+    	}
+    	.row {
+    		margin-right: 0px;
+    	}
+    	.bg-dark {
+    		color: white;
+    	}
+    	a:hover {
+    		text-decoration: none;
+    	}
+
+    	@keyframes blinker {  
+		  50% { opacity: 0.75; }
+		}
+    </style>
+</head>
+<body style="height: 480px; width: 800px; padding: 0px;">
+
+<nav class="bg-dark" style="padding: 5px 10px;">
+	<div class="row">
+		<div class="col-md-1">
+			<a href="/"><button type="button" class="btn btn-outline-light" style="padding: 10px 15px;"> &nbsp; <i class="fas fa-chevron-left"></i> &nbsp; </button></a>
+		</div>
+		<div class="col-md-7" style=" margin-top: 10px;">
+			<a href="#" style="color: white;">ARGESTA 3D Yazıcı &nbsp; | &nbsp; Sıcaklık Kontrol</a>
+		</div>
+		<div class="col-md-4" style=" margin-top: 10px;" align="right">
+			<a href="#" style="color: lightgreen;"><i class="fas fa-check"></i> Yazılım Güncel!</a>
+			&nbsp;
+			<i class="fas fa-sign-in-alt" style="color: lightgreen;"></i>&nbsp;
+			<i class="fas fa-wifi" style="color: lightgreen;"></i>
+		</div>
+	</div>
+</nav>
+
+<div class="row" style="height: 424px; background-image: url('https://as1.ftcdn.net/jpg/01/83/60/76/500_F_183607639_b99WlxPHAV7qWlatHb4YbiOAJzndXImz.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center;">
+
+	<div class="col-md-5" align="center" style="padding-top: 70px;">
+		<i class="fas fa-inbox" style="font-size: 60px; -webkit-text-stroke: 2px white;"></i>
+		<div style="font-size: 20px;">TABLA</div>
+		<div id="BTemp">0 °C <i class="fas fa-angle-right" style="color: #007bff;"></i> Kapalı</div>
+
+		<div class="row" style="margin-top: 20px;">
+			<div class="col-md-6" align="right">
+				<button onclick="PLATabla()" type="button" class="btn btn-dark" style="padding: 15px 30px;"> PLA </button>
+			</div>
+			<div class="col-md-6" align="left">
+				<button onclick="ABSTabla()" type="button" class="btn btn-dark" style="padding: 15px 30px;"> ABS </button>
+			</div>
+		</div>
+		<div class="row" style="margin-top: 20px;">
+			<div class="col-md-6" align="right">
+				<button id="TablaCUSTOM" type="button" class="btn btn-info" style="padding: 8px 33px; font-size: 25px;"> <i class="fas fa-keyboard"></i> </button>
+				<input id="TablaCUSTOM-dummy" type="text" class="form-control" style="display: none;">
+			</div>
+			<div class="col-md-6" align="left">
+				<button onclick="TablaOFF()" type="button" class="btn btn-danger" style="padding: 5px 36px; font-size: 30px;"> <i class="fas fa-times"></i> </button>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-5" align="center" style="padding-top: 70px;">
+		<i class="fas fa-burn" style="transform: rotate(180deg); font-size: 60px; -webkit-text-stroke: 2px white;"></i>	
+		<div style="font-size: 20px;">NOZUL</div>
+		<div id="ETemp">0 °C <i class="fas fa-angle-right" style="color: #007bff;"></i> Kapalı</div>
+
+		<div class="row" style="margin-top: 20px;">
+			<div class="col-md-6" align="right">
+				<button onclick="PLANozul()" type="button" class="btn btn-dark" style="padding: 15px 30px;"> PLA </button>
+			</div>
+			<div class="col-md-6" align="left">
+				<button onclick="ABSNozul()" type="button" class="btn btn-dark" style="padding: 15px 30px;"> ABS </button>
+			</div>
+		</div>
+		<div class="row" style="margin-top: 20px;">
+			<div class="col-md-6" align="right">
+				<button id="NozulCUSTOM" type="button" class="btn btn-info" style="padding: 8px 33px; font-size: 25px;"> <i class="fas fa-keyboard"></i> </button>
+				<input id="NozulCUSTOM-dummy" type="text" class="form-control" style="display: none;">
+			</div>
+			<div class="col-md-6" align="left">
+				<button onclick="NozulOFF()" type="button" class="btn btn-danger" style="padding: 5px 36px; font-size: 30px;"> <i class="fas fa-times"></i> </button>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-2" style="height: 100%; background-color: #73808c; -webkit-box-shadow: inset 3px 0px 10px 0px rgba(52,58,64,0.58); padding-right: 15px; padding-top: 20px;">
+		<button onclick="fan0()" type="button" class="btn btn-light" style="margin-top: 15px; font-size: 20px; height: 70px; width: 100%;"> <img src="/static/fan.png" style="width: 25px; margin-top: -5px;"> 0% </button>
+		<button onclick="fan1()" type="button" class="btn btn-light" style="margin-top: 15px; font-size: 20px; height: 70px; width: 100%;"> <img src="/static/fan.png" style="width: 25px; margin-top: -5px;"> 25% </button>
+		<button onclick="fan2()" type="button" class="btn btn-light" style="margin-top: 15px; font-size: 20px; height: 70px; width: 100%;"> <img src="/static/fan.png" style="width: 25px; margin-top: -5px;"> 50% </button>
+		<button onclick="fan3()" type="button" class="btn btn-light" style="margin-top: 15px; font-size: 20px; height: 70px; width: 100%;"> <img src="/static/fan.png" style="width: 25px; margin-top: -5px;"> 100% </button>
+	</div>
+	
+</div>
+
+<script>
+
+
+$.fn.numpad.defaults.gridTpl = '<table class="table modal-content"></table>';
+$.fn.numpad.defaults.backgroundTpl = '<div class="modal-backdrop in" style="background-color: rgba(0,0,0,0.5);"></div>';
+$.fn.numpad.defaults.displayTpl = '<input type="text" class="form-control" style="font-size: 22px;" />';
+$.fn.numpad.defaults.buttonNumberTpl =  '<button type="button" class="btn btn-default" style="font-size: 22px;"></button>';
+$.fn.numpad.defaults.buttonFunctionTpl = '<button type="button" class="btn" style="width: 100%; font-size: 22px;"></button>';
+$.fn.numpad.defaults.textDone = 'Tamam';
+$.fn.numpad.defaults.textCancel = 'İptal';
+$.fn.numpad.defaults.textClear = 'Temizle';
+$.fn.numpad.defaults.textDelete = 'Sil';
+$.fn.numpad.defaults.onKeypadCreate = function(){$(this).find('.done').addClass('btn-primary');};
+
+
+window.setInterval(function(){
+	$.ajax({
+		url: "/filecontrol/",
+		type: "POST",
+		data: { "istek": "answer" },
+		success: function(sonuc){
+			var values = sonuc.split("*");
+
+			var ETempCur = values[0];
+			var ETempTar = values[1];
+			$("#ETemp").html(ETempCur + " <i class='fas fa-angle-right' style='color: #007bff;'></i> " + ETempTar);
+
+			var BTempCur = values[2];
+			var BTempTar = values[3];
+			$("#BTemp").html(BTempCur + " <i class='fas fa-angle-right' style='color: #007bff;'></i> " + BTempTar);
+
+			if (ETempTar != "Kapali" || BTempTar != "Kapali") {
+					$("#PreheatBTN").addClass("preheatActive");
+			}
+			else {
+					$("#PreheatBTN").removeClass("preheatActive");
+			}
+		}
+	});
+}, 500);
+
+function PLATabla() {
+	$.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "PLATabla" },
+		success: function(sonuc){ }
+	});
+}
+
+function ABSTabla() {
+	$.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "ABSTabla" },
+		success: function(sonuc){ }
+	});
+}
+
+function PLANozul() {
+	$.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "PLANozul" },
+		success: function(sonuc){ }
+	});
+}
+
+function ABSNozul() {
+	$.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "ABSNozul" },
+		success: function(sonuc){ }
+	});
+}
+
+function NozulOFF() {
+	$.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "NozulOFF" },
+		success: function(sonuc){ }
+	});
+}
+
+function TablaOFF() {
+	$.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "TablaOFF" },
+		success: function(sonuc){ }
+	});
+}
+
+
+$('#TablaCUSTOM').numpad({ target: $('#TablaCUSTOM-dummy'), decimalSeparator: '.' });
+$('#NozulCUSTOM').numpad({ target: $('#NozulCUSTOM-dummy'), decimalSeparator: '.' });
+
+$( "#NozulCUSTOM-dummy" ).change(function() {
+  console.log($( "#NozulCUSTOM-dummy" ).val());
+  $.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "NozulCustom",
+		"val": $( "#NozulCUSTOM-dummy" ).val() },
+		success: function(sonuc){ }
+	});
+});
+
+$( "#TablaCUSTOM-dummy" ).change(function() {
+  console.log($( "#TablaCUSTOM-dummy" ).val());
+  $.ajax({
+		url: "/setheat/",
+		type: "POST",
+		data: { "istek": "TablaCustom",
+		"val": $( "#TablaCUSTOM-dummy" ).val() },
+		success: function(sonuc){ }
+	});
+});
+
+function fan0() {
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "M106S0" },
+		success: function(sonuc){ }
+	});
+}
+
+function fan1() {
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "M106S63.75" },
+		success: function(sonuc){ }
+	});
+}
+
+
+function fan2() {
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "M106S127.5" },
+		success: function(sonuc){ }
+	});
+}
+
+function fan3() {
+	$.ajax({
+		url: "/cmdsend/",
+		type: "POST",
+		data: { "cmd": "M106S255" },
+		success: function(sonuc){ }
+	});
+}
+
+
+</script>
+
+</body>
+</html>
