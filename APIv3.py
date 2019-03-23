@@ -3,6 +3,7 @@ import time
 import MySQLdb
 import os
 import logging
+import threading
 
 # --------- AYARLAR --------- #
 
@@ -11,6 +12,8 @@ queue = 0 # Bekleyen komut sayısı (0 olarak bırakılmalı)
 maxQueue = 5 # Maksimum bekletilebilecek komut sayısı
 printLine = 0 # toplam yazdırılacak satır sayısı
 printedLine = 0 # yazdırılmış satır sayısı
+printFile = "" # yazdırılacak dosyanın konumu
+lines = [] # yazdırılacak dosya
 
 # --------- ------- --------- #
 
@@ -170,7 +173,7 @@ def controlCoordinates ():
 
 # No Returns
 def sendManuelCommands ():
-    sql = "SELECT cmd,ID FROM ArdCmd WHERE sended = 0;"
+    sql = "SELECT cmd,ID FROM ArdCmd WHERE sended = 0 ORDER BY ID ASC LIMIT 1;"
     cmd = ""
     cmdID = ""
     try:
@@ -184,7 +187,7 @@ def sendManuelCommands ():
 
     if cmd != "":
         commandSend(cmd)
-        print(readArduino())
+        readArduino()
     if cmdID != "":
         sql = "UPDATE ArdCmd SET sended = 1 WHERE ID = " + str(cmdID) + ";"
         cursor.execute(sql)
@@ -193,18 +196,20 @@ def sendManuelCommands ():
 
 # Returns True False
 def isPrinting ():
+    db1 = MySQLdb.connect("localhost", "apiagent1", "api1", "ARG")
+    cursor1 = db.cursor()
 
     sql = "SELECT OptVal FROM OPT WHERE OptID = 'Printing';"
     Printing = ""
     try:
-        cursor.execute(sql)
-        results = cursor.fetchall()
+        cursor1.execute(sql)
+        results = cursor1.fetchall()
         for row in results:
             Printing = row[0]
     except:
         print("SQL ERROR #S01")
 
-    db.commit()
+    db1.commit()
 
     if Printing == "False":
         return False
@@ -217,13 +222,15 @@ def _generalcontroller():
     while True:
         controlTemp()
         controlCoordinates()
-        time.sleep(timeForControl)
+        time.sleep(1)
 
 def _commandSender():
     while True:
+        # Yazdırılmıyorsa özel komutları sql den yolla
         if isPrinting() == False:
             sendManuelCommands()
-        else:
+        time.sleep(timeForControl/2)
+        # Yazdırma işleminde ise dosyadan komutları gönder
 
 
 # Arduino başlangıç tanıtımını okut
@@ -232,3 +239,8 @@ while starterline <= 20:
     readArduino()
     starterline += 1
 
+th_controller = threading.Thread(target=_generalcontroller)
+th_sender = threading.Thread(target=_commandSender)
+
+th_controller.start()
+th_sender.start()
