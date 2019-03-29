@@ -266,7 +266,7 @@ def startPrint():
 
 # # # # # THREADS # # # # #
 
-# Controller Thread
+# Controller  !!! Thread NOT WORKING !!!
 def _generalcontroller():
     global db
     global cursor
@@ -285,31 +285,46 @@ def _printState():
     global controllerThreadWorking
     global printThreadWorking
     global printReaderThreadWorking
+    global printedLine
+    global printQueue
 
     while True:
-        if printThreadWorking and printedLine < 30 and printedLine%100 == 0:
+        if (printThreadWorking and printedLine < 30) or (printedLine%100 == 0 and printedLine > 0):
             print("Print State Controller is Waiting")
-            time.sleep(1)
+            time.sleep(5)
         elif isPrinting():
             if printThreadWorking == False:
                 startPrint()
                 print("Yazdırma işlemi başlatılıyor. Satır: " + str(len(lines)))
         else:
-            # Print threadini iptal et
-            printThreadWorking = False
-            printReaderThreadWorking = False
-            time.sleep(1)
-            controllerThreadWorking = True
-            # if th_controller.is_alive() == False:
-            #     th_controller.start()
-            print("Yazdırma işlemi yok")
+            if printThreadWorking:
+                print("Yazdırma işlemi kapatılıyor")
+                # Print threadini iptal et
+                printThreadWorking = False
+                printReaderThreadWorking = False
+                time.sleep(2)
+                commandSend("G28XY")
+                printedLine = 0
+                printQueue = 0
+                print("10 Saniye sonra arduino resetlenecek")
+                time.sleep(10)
+                arduino.close()
+                arduino.open()
+                print("Arduino Resetlendi.")
+                time.sleep(5)
 
-            sendManuelCommands()
-            controlTemp()
-            sendManuelCommands()
-            controlCoordinates()
-            sendManuelCommands()
-        # time.sleep(timeForControl)
+            else:
+                print("Yazdırma işlemi yok")
+
+                if th_printReader.is_alive() == False:
+                    th_printReader.run()
+
+                sendManuelCommands()
+                controlTemp()
+                sendManuelCommands()
+                controlCoordinates()
+                sendManuelCommands()
+        time.sleep(timeForControl)
 
 
 # Print thread
