@@ -1,9 +1,9 @@
 import serial
 import time
-import MySQLdb
 import os
 import logging
 import threading
+import pymysql
 
 # --------- AYARLAR --------- #
 
@@ -37,7 +37,11 @@ print("-- PID: " + str(os.getpid()))
 print("----------------------------------------")
 print("")
 
-db = MySQLdb.connect("localhost", "pyt", "pytpass", "ARG")
+db = pymysql.connect(host='localhost',
+                     user='pyt',
+                     password='pytpass',
+                     db='ARG',
+                     autocommit=True)
 cursor = db.cursor()
 
 
@@ -47,13 +51,11 @@ print("Database Bağlantısı Yapıldı.")
 
 sql = "Delete From ArdCmd;"
 cursor.execute(sql)
-db.commit()
 
 print("Bekleyen Komutlar Temizlendi.")
 
 sql = "UPDATE OPT SET OptVal = '" + str(os.getpid()) + "' Where OptID = 'APIProcID';"
 cursor.execute(sql)
-db.commit()
 
 print("PID Kaydedildi.")
 
@@ -71,6 +73,9 @@ def commandSend (command):
 
 # Returns Answer as a String
 def readArduino ():
+    global printQueue
+    global db
+    global arduino
 
     y = True
     cevap = ""
@@ -81,60 +86,58 @@ def readArduino ():
         if data != "":
             cevap = data
             print("<< " + cevap)
+            if "ok" in cevap and printQueue > 0:
+                printQueue -= 1
         else:
             y = False
+
+    if "T:" in cevap and "B:" in cevap:
+        ETempA = cevap.find("T:") + 2
+        ETempZ = cevap.find("B:") - 1
+
+        ETempCurrent, ETempTarget = cevap[ETempA:ETempZ].replace(" ", "").split("/")
+
+        BTempA = cevap.find("B:") + 2
+        BTempZ = cevap.find("@:") - 1
+
+        BTempCurrent, BTempTarget = cevap[BTempA:BTempZ].replace(" ", "").split("/")
+
+        if str(ETempTarget) == "0.00":
+            ETempTarget = "Kapali"
+
+        if str(BTempTarget) == "0.00":
+            BTempTarget = "Kapali"
+
+        if float(ETempCurrent) < 0:
+            ETempCurrent = 0
+
+        if float(BTempCurrent) < 0:
+            BTempCurrent = 0
+
+        sql = "UPDATE ArdGosterge SET ETemp = '" + str(ETempCurrent) + "', ETar = '" + str(
+            ETempTarget) + \
+              "', BTemp = '" + str(BTempCurrent) + "', BTar = '" + str(BTempTarget) + "' WHERE ID = 1"
+        time.sleep(0.3)
+        cursor.execute(sql)
+
+    elif "Error:" in cevap:
+        arduino.close()
+        arduino.open()
 
     return cevap
 
 
 # No Returns
 def controlTemp ():
+    global db
+
     commandSend("M105")
-    y = True
-    cevap = ""
-    counterA = 0
-    while y:
-        data = arduino.readline()[:-1]
-        data = data.decode('utf-8')
-        counterA += 1
-        if data != "" and not data.startswith("echo") and not data == "ok" and data.startswith("ok") or "T:" in data and "B:" in data:
-            cevap = data
-            print("<< " + cevap)
-            y = False
-        elif counterA >= 10:
-            y = False
-    if counterA >= 10:
-        return None
-    ETempA = cevap.find("T:") + 2
-    ETempZ = cevap.find("B:") - 1
-
-    ETempCurrent, ETempTarget = cevap[ETempA:ETempZ].replace(" ", "").split("/")
-
-    BTempA = cevap.find("B:") + 2
-    BTempZ = cevap.find("@:") - 1
-
-    BTempCurrent, BTempTarget = cevap[BTempA:BTempZ].replace(" ", "").split("/")
-
-    if str(ETempTarget) == "0.00":
-        ETempTarget = "Kapali"
-
-    if str(BTempTarget) == "0.00":
-        BTempTarget = "Kapali"
-
-    if float(ETempCurrent) < 0:
-        ETempCurrent = 0
-
-    if float(BTempCurrent) < 0:
-        BTempCurrent = 0
-
-
-    sql = "UPDATE ArdGosterge SET ETemp = '" + str(ETempCurrent) + "', ETar = '" + str(ETempTarget) + \
-          "', BTemp = '" + str(BTempCurrent) + "', BTar = '" + str(BTempTarget) + "' WHERE ID = 1"
-    cursor.execute(sql)
+    readArduino()
 
 
 # No Returns
 def controlCoordinates ():
+
     commandSend("M114")
 
     y = True
@@ -176,6 +179,8 @@ def controlCoordinates ():
 
 # No Returns
 def sendManuelCommands ():
+    global db
+
     sql = "SELECT cmd,ID FROM ArdCmd WHERE sended = 0;"
     cmd = ""
     cmdID = ""
@@ -183,34 +188,34 @@ def sendManuelCommands ():
         cursor.execute(sql)
         results = cursor.fetchall()
         for row in results:
-            cmd = row[0]
-            cmdID = row[1]
-            if cmd != "":
+            if row[0] != "":
+                cmd = row[0]
                 commandSend(cmd)
                 readArduino()
-            if cmdID != "":
+            if row[1] != "":
+                cmdID = row[1]
                 sql = "UPDATE ArdCmd SET sended = 1 WHERE ID = " + str(cmdID) + ";"
                 cursor.execute(sql)
-    except:
+    except TypeError as e:
         print("SQL ERROR #S02")
-        db = MySQLdb.connect("localhost", "pyt", "pytpass", "ARG")
+        print(e)
 
 
 # Returns True False
 def isPrinting ():
+    global db
 
     sql = "SELECT OptVal FROM OPT WHERE OptID = 'Printing';"
     Printing = ""
     try:
+        time.sleep(1)
         cursor.execute(sql)
         results = cursor.fetchall()
         for row in results:
             Printing = row[0]
-    except:
+    except TypeError as e:
         print("SQL ERROR #S01")
-        db = MySQLdb.connect("localhost", "pyt", "pytpass", "ARG")
-
-    db.commit()
+        print(e)
 
     if Printing == "False":
         return False
@@ -218,7 +223,7 @@ def isPrinting ():
         return True
 
 
-# Starts printing queue
+# 01tarts printing queue
 def startPrint():
     global controllerThreadWorking
     global printThreadWorking
@@ -240,11 +245,12 @@ def startPrint():
 
     printLine = sum(1 for line in open(printFile))
 
+    time.sleep(2)
+
     sql = "UPDATE OPT SET OptVal = '" + str(printLine) + "' WHERE OptID = 'PrintLine'"
     cursor.execute(sql)
     sql = "UPDATE OPT SET OptVal = '20' WHERE OptID = 'PrintedLine'"
     cursor.execute(sql)
-    db.commit()
 
     f = open(printFile, 'r')
     lines = f.readlines()
@@ -254,8 +260,8 @@ def startPrint():
 
     # Print Threadlerini çalıştır manual controlleri kapa
     controllerThreadWorking = False
+    time.sleep(3)
     printThreadWorking = True
-    th_print.start()
 
 
 # # # # # THREADS # # # # #
@@ -265,35 +271,45 @@ def _generalcontroller():
     global db
     global cursor
 
-    while controllerThreadWorking:
-        controlTemp()
-        controlCoordinates()
-        sendManuelCommands()
+    while True:
+        if controllerThreadWorking:
+            controlTemp()
+            controlCoordinates()
+            sendManuelCommands()
 
-        try:
-            db.commit()
-        except:
-            db = MySQLdb.connect("localhost", "pyt", "pytpass", "ARG")
-            cursor = db.cursor()
-
-        time.sleep(timeForControl/2)
+            time.sleep(timeForControl)
 
 
 # Print state controller
 def _printState():
+    global controllerThreadWorking
+    global printThreadWorking
+    global printReaderThreadWorking
+
     while True:
-        if isPrinting():
-            if printStarted == False:
+        if printThreadWorking and printedLine < 30 and printedLine%100 == 0:
+            print("Print State Controller is Waiting")
+            time.sleep(1)
+        elif isPrinting():
+            if printThreadWorking == False:
                 startPrint()
                 print("Yazdırma işlemi başlatılıyor. Satır: " + str(len(lines)))
         else:
             # Print threadini iptal et
-            controllerThreadWorking = True
             printThreadWorking = False
-            if th_controller.is_alive() == False:
-                th_controller.start()
+            printReaderThreadWorking = False
+            time.sleep(1)
+            controllerThreadWorking = True
+            # if th_controller.is_alive() == False:
+            #     th_controller.start()
             print("Yazdırma işlemi yok")
-        time.sleep(timeForControl*2)
+
+            sendManuelCommands()
+            controlTemp()
+            sendManuelCommands()
+            controlCoordinates()
+            sendManuelCommands()
+        # time.sleep(timeForControl)
 
 
 # Print thread
@@ -301,94 +317,47 @@ def _print():
     global printedLine
     global printQueue
     global printReaderThreadWorking
+    global db
 
-    while printLine <= printedLine:
-        if printThreadWorking == False:
-            return
+    while True:
+        while printThreadWorking:
+            if printLine <= printedLine:
+                guncelSatir = lines[printedLine]
 
-        guncelSatir = lines[printedLine]
+                if printedLine%100 == 0 or printedLine <= 15:
+                    time.sleep(0.3)
+                    sql = "UPDATE OPT SET OptVal = '" + str(printedLine) + "' Where OptID = 'PrintedLine'"
+                    try:
+                        cursor.execute(sql)
+                    except:
+                        asda = "a"
 
-        if "Z" in guncelSatir:
-            whereisZ = guncelSatir.find("Z")
-            whereisF = guncelSatir.find("F")
-            sql = "UPDATE ArdGosterge SET Koor_Z = '" + guncelSatir[whereisZ + 1:whereisF - 1] + "'"
+                if guncelSatir.startswith(";") or guncelSatir == "" or len(guncelSatir) <= 3:
+                    printedLine += 1
 
-            cursor.execute(sql)
-            db.commit()
-
-        if guncelSatir.startswith(";") or guncelSatir == "" or len(guncelSatir) <= 3:
-            printedLine += 1
-
-        elif printedLine <= 20:
-            commandSend(guncelSatir)
-            print("[ " + str(printedLine) + " ]")
-            readArduino()
-
-            printedLine += 1
-
-        else:
-            if printQueue == 0:
-                printReaderThreadWorking = True
-                th_printReader.start()
-                printQueue = 1
-                time.sleep(1)
-            elif printQueue <= maxQueue:
-                commandSend(guncelSatir)
-                print("[ " + str(printedLine) + " ]")
-                printedLine += 1
-                printQueue += 1
+                else:
+                    if printReaderThreadWorking == False:
+                        printReaderThreadWorking = True
+                        printQueue = 1
+                        time.sleep(1)
+                    elif printQueue <= maxQueue:
+                        commandSend(guncelSatir)
+                        print("[ " + str(printedLine) + " ]  Q: " + str(printQueue) + " / " + str(maxQueue))
+                        printedLine += 1
+                        printQueue += 1
 
 
 # Print reader thread (controlling the queue)
 def _printReader():
     global printQueue
     while True:
-        if printReaderThreadWorking == False:
-            return
-
-        if printedLine >= 20:
-            geridonut = readArduino()
-
-            if "T:" in geridonut and "B:" in geridonut:
-                ETempA = geridonut.find("T:") + 2
-                ETempZ = geridonut.find("B:") - 1
-
-                ETempCurrent, ETempTarget = geridonut[ETempA:ETempZ].replace(" ", "").split("/")
-
-                BTempA = geridonut.find("B:") + 2
-                BTempZ = geridonut.find("@:") - 1
-
-                BTempCurrent, BTempTarget = geridonut[BTempA:BTempZ].replace(" ", "").split("/")
-
-                if str(ETempTarget) == "0.00":
-                    ETempTarget = "Kapali"
-
-                if str(BTempTarget) == "0.00":
-                    BTempTarget = "Kapali"
-
-                if float(ETempCurrent) < 0:
-                    ETempCurrent = 0
-
-                if float(BTempCurrent) < 0:
-                    BTempCurrent = 0
-
-                sql = "UPDATE ArdGosterge SET ETemp = '" + str(ETempCurrent) + "', ETar = '" + str(
-                    ETempTarget) + \
-                      "', BTemp = '" + str(BTempCurrent) + "', BTar = '" + str(BTempTarget) + "' WHERE ID = 1"
-                cursor.execute(sql)
-                try:
-                    db.commit()
-                except:
-                    db = MySQLdb.connect("localhost", "pyt", "pytpass", "ARG")
-
-            elif "ok" in geridonut:
-                printQueue -= 1
+        if printReaderThreadWorking:
+            cevap = readArduino()
 
 
-# Queue reporter
-def _printingqueue():
-    while True:
-        print(str(printQueue) + " / " + str(maxQueue))
+        # if "ok" in cevap and printQueue > 0:
+        #     print("printQueue -1")
+        #     printQueue -= 1
 
 # # # # # ------- # # # # #
 
@@ -406,6 +375,7 @@ while starterline <= 20:
     starterline += 1
 
 controllerThreadWorking = True
-th_controller.start()
 th_printStater.start()
-
+# th_controller.start()
+th_print.start()
+th_printReader.start()

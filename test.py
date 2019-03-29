@@ -1,19 +1,20 @@
-import serial
-import time
-import os
+import pymysql
 
-arduino = serial.Serial('/dev/ttyUSB0', 115200, timeout=.1)
-arduino.flushInput()
+db = pymysql.connect(host='localhost',
+                     user='pyt',
+                     password='pytpass',
+                     db='ARG',
+                     autocommit=True)
+cursor = db.cursor()
 
-time.sleep(1)
+sql = "SELECT OptVal From OPT Where OptID = 'PrintFileLoc';"
+printFile = ""
+try:
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for row in results:
+        printFile = row[0]
+except:
+    asda = ""
 
-
-print("-- PID: " + str(os.getpid()))
-
-z = True
-
-while z:
-    ser_bytes = arduino.readline()
-    decoded_bytes = ser_bytes[0:len(ser_bytes) - 2].decode("utf-8", errors='replace')
-    print(decoded_bytes)
-    time.sleep(3)
+print(printFile)
