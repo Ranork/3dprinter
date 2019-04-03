@@ -22,3 +22,5 @@ Raspberry pi 5inch için tasarlanmış kontrol paneli
 - PyYAML (3.13)
 - setuptools (32.3.1)
 - vine (1.2.0)
+
+Note: Works with Arduino Marlin software and 115200 baudrate
