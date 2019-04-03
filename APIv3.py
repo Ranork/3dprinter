@@ -30,34 +30,42 @@ time.sleep(1)
 
 print("")
 print("----------------------------------------")
-print("-- Printer API Basariyla Calistirildi.")
-print("-- Developed by Ranork for ARGESTA")
+print("-- Welcome to Printer API")
+print("-- Developed by Ranork for ARGESTA Engineering")
 print("-- ")
 print("-- PID: " + str(os.getpid()))
 print("----------------------------------------")
 print("")
 
-db = pymysql.connect(host='localhost',
-                     user='pyt',
-                     password='pytpass',
-                     db='ARG',
-                     autocommit=True)
+db = pymysql.connect()
 cursor = db.cursor()
 
+# Define MySQL Connection
+def mysqlConn():
+    global db
+    global cursor
+    db = pymysql.connect(host='localhost',
+                         user='pyt',
+                         password='pytpass',
+                         db='ARG',
+                         autocommit=True)
+    cursor = db.cursor()
+
+mysqlConn()
 
 now = int(time.time())
 
-print("Database Bağlantısı Yapıldı.")
+print("Database connected.")
 
 sql = "Delete From ArdCmd;"
 cursor.execute(sql)
 
-print("Bekleyen Komutlar Temizlendi.")
+print("Command queue cleared.")
 
 sql = "UPDATE OPT SET OptVal = '" + str(os.getpid()) + "' Where OptID = 'APIProcID';"
 cursor.execute(sql)
 
-print("PID Kaydedildi.")
+print("PID Saved.")
 
 print("")
 
@@ -240,7 +248,7 @@ def startPrint():
     except:
         asda = ""
 
-    print(">> PRINT JOB STARTING: " + printFile)
+    print(">> PRINT JOB STARTING | File: " + printFile)
     logging.debug("Print Job Started! -- " + printFile)
 
     printLine = sum(1 for line in open(printFile))
@@ -267,17 +275,17 @@ def startPrint():
 # # # # # THREADS # # # # #
 
 # Controller  !!! Thread NOT WORKING !!!
-def _generalcontroller():
-    global db
-    global cursor
-
-    while True:
-        if controllerThreadWorking:
-            controlTemp()
-            controlCoordinates()
-            sendManuelCommands()
-
-            time.sleep(timeForControl)
+# def _generalcontroller():
+#     global db
+#     global cursor
+#
+#     while True:
+#         if controllerThreadWorking:
+#             controlTemp()
+#             controlCoordinates()
+#             sendManuelCommands()
+#
+#             time.sleep(timeForControl)
 
 
 # Print state controller
@@ -295,10 +303,10 @@ def _printState():
         elif isPrinting():
             if printThreadWorking == False:
                 startPrint()
-                print("Yazdırma işlemi başlatılıyor. Satır: " + str(len(lines)))
+                print("Print job detected. File line count: " + str(len(lines)))
         else:
             if printThreadWorking:
-                print("Yazdırma işlemi kapatılıyor")
+                print("Print job is canceled.")
                 # Print threadini iptal et
                 printThreadWorking = False
                 printReaderThreadWorking = False
@@ -306,15 +314,15 @@ def _printState():
                 commandSend("G28XY")
                 printedLine = 0
                 printQueue = 0
-                print("10 Saniye sonra arduino resetlenecek")
+                print("Arduino will be reseted after 10 seconds.")
                 time.sleep(10)
                 arduino.close()
                 arduino.open()
-                print("Arduino Resetlendi.")
+                print("Arduino Reset")
                 time.sleep(5)
 
             else:
-                print("Yazdırma işlemi yok")
+                print("There is not any Print Job")
 
                 if th_printReader.is_alive() == False:
                     th_printReader.run()
@@ -339,13 +347,16 @@ def _print():
             if printLine <= printedLine:
                 guncelSatir = lines[printedLine]
 
-                if printedLine%100 == 0 or printedLine <= 15:
+                if printedLine % 100 == 0 or printedLine <= 15:
                     time.sleep(0.3)
                     sql = "UPDATE OPT SET OptVal = '" + str(printedLine) + "' Where OptID = 'PrintedLine'"
                     try:
                         cursor.execute(sql)
                     except:
-                        asda = "a"
+                        print("SQL Reconnect called!")
+                        mysqlConn()
+                    if printedLine % 10000 == 0:
+                        printQueue = 0
 
                 if guncelSatir.startswith(";") or guncelSatir == "" or len(guncelSatir) <= 3:
                     printedLine += 1
@@ -377,13 +388,13 @@ def _printReader():
 # # # # # ------- # # # # #
 
 
-th_controller = threading.Thread(target=_generalcontroller)
+# th_controller = threading.Thread(target=_generalcontroller)
 th_print = threading.Thread(target=_print)
 th_printStater = threading.Thread(target=_printState)
 th_printReader = threading.Thread(target=_printReader)
 
 
-# Arduino başlangıç tanıtımını okut
+# Read marlin describe lines
 starterline = 0
 while starterline <= 20:
     readArduino()
