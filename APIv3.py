@@ -5,11 +5,16 @@ import logging
 import threading
 import pymysql
 
-# --------- AYARLAR --------- #
+# --------- SETTINGS
 
 timeForControl = 2 #Isı ve Koordinat kontrollerinin zaman aralığı (saniye)
-printQueue = 0 # Bekleyen komut sayısı (0 olarak bırakılmalı)
 maxQueue = 5 # Maksimum bekletilebilecek komut sayısı
+controlQueue = 0 # Beklenen kontrol sırası (0 olarak bırakılmalı)
+
+# ---------- Constans Variables
+
+printQueue = 0 # Bekleyen komut sayısı (0 olarak bırakılmalı)
+maxControlQueue = 10 # Maksimum beklenecek kontrol
 printLine = 0 # toplam yazdırılacak satır sayısı
 printedLine = 0 # yazdırılmış satır sayısı
 printFile = "" # yazdırılacak dosyanın konumu
@@ -20,7 +25,7 @@ controllerThreadWorking = False
 printThreadWorking = False
 printReaderThreadWorking = False
 
-# --------- ------- --------- #
+# ------------------------
 
 logging.basicConfig(filename='kayitlar.log', level=logging.DEBUG)
 
@@ -37,7 +42,11 @@ print("-- PID: " + str(os.getpid()))
 print("----------------------------------------")
 print("")
 
-db = pymysql.connect()
+db = pymysql.connect(host='localhost',
+                     user='pyt',
+                     password='pytpass',
+                     db='ARG',
+                     autocommit=True)
 cursor = db.cursor()
 
 # Define MySQL Connection
@@ -82,6 +91,7 @@ def commandSend (command):
 # Returns Answer as a String
 def readArduino ():
     global printQueue
+    global controlQueue
     global db
     global arduino
 
@@ -128,6 +138,9 @@ def readArduino ():
         time.sleep(0.3)
         cursor.execute(sql)
 
+        if controlQueue > 1:
+            controlQueue -= 1
+
     elif "Error:" in cevap:
         arduino.close()
         arduino.open()
@@ -137,10 +150,22 @@ def readArduino ():
 
 # No Returns
 def controlTemp ():
-    global db
+    global controlQueue
 
-    commandSend("M105")
-    readArduino()
+    if controlQueue < maxQueue:
+        commandSend("M105")
+        readArduino()
+        controlQueue += 1
+    else:
+        print("Arduino will be reseted after 10 seconds.")
+        time.sleep(10)
+        arduino.close()
+        arduino.open()
+        print("Arduino Reset")
+        time.sleep(5)
+        controlQueue = 0
+
+
 
 
 # No Returns
